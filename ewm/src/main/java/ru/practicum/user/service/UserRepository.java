@@ -1,0 +1,12 @@
+package ru.practicum.user.service;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.user.model.User;
+
+import java.util.List;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    public List<User> findAllByIdIn(List<Long> userIds, Pageable pageable);
+}
