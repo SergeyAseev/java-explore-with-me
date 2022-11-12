@@ -10,13 +10,11 @@ public interface EventService {
     //admin controller start
 
     /**
-     *
      * @return
      */
     List<EventFullDto> retrieveEvents();
 
     /**
-     *
      * @param eventFullDto
      * @param eventId
      * @return
@@ -24,14 +22,12 @@ public interface EventService {
     EventFullDto updateEvent(EventFullDto eventFullDto, Long eventId);
 
     /**
-     *
      * @param eventId
      * @return
      */
     EventFullDto publishEvent(Long eventId);
 
     /**
-     *
      * @param eventId
      * @return
      */
@@ -41,13 +37,11 @@ public interface EventService {
     //public controller start
 
     /**
-     *
      * @return
      */
     List<EventShortDto> retrievePublicEvents();
 
     /**
-     *
      * @param eventId
      * @return
      */
@@ -57,7 +51,6 @@ public interface EventService {
     //private controller start
 
     /**
-     *
      * @param userId
      * @param from
      * @param size
@@ -66,7 +59,6 @@ public interface EventService {
     List<EventFullDto> retrieveEventsByCreator(Long userId, Integer from, Integer size);
 
     /**
-     *
      * @param userId
      * @param eventFullDto
      * @return
@@ -74,7 +66,6 @@ public interface EventService {
     EventFullDto updateEventByCreator(Long userId, EventFullDto eventFullDto);
 
     /**
-     *
      * @param userId
      * @param eventFullDto
      * @return
@@ -82,7 +73,6 @@ public interface EventService {
     EventFullDto createEvent(Long userId, EventFullDto eventFullDto);
 
     /**
-     *
      * @param userId
      * @param eventId
      * @return
@@ -90,7 +80,6 @@ public interface EventService {
     List<EventFullDto> retrieveEventsByIdForCreator(Long userId, Long eventId);
 
     /**
-     *
      * @param userId
      * @param eventId
      * @return
@@ -98,7 +87,6 @@ public interface EventService {
     EventFullDto cancelEventByCreator(Long userId, Long eventId);
 
     /**
-     *
      * @param userId
      * @param eventId
      * @return
@@ -106,7 +94,6 @@ public interface EventService {
     List<EventFullDto> retrieveRequestEventByUser(Long userId, Long eventId);
 
     /**
-     *
      * @param userId
      * @param eventId
      * @return
@@ -114,7 +101,6 @@ public interface EventService {
     EventFullDto confirmRequestForEvent(Long userId, Long eventId);
 
     /**
-     *
      * @param userId
      * @param eventId
      * @return

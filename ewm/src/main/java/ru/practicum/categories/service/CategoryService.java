@@ -8,34 +8,29 @@ public interface CategoryService {
 
 
     /**
-     *
      * @param categoryDto
      * @return
      */
-    CategoryDto createCategory (CategoryDto categoryDto);
+    CategoryDto createCategory(CategoryDto categoryDto);
 
     /**
-     *
      * @param categoryDto
      * @return
      */
-    CategoryDto updateCategory (CategoryDto categoryDto);
+    CategoryDto updateCategory(CategoryDto categoryDto);
 
     /**
-     *
      * @param catId
      */
-    void removeCategory (Integer catId);
+    void removeCategory(Integer catId);
 
     /**
-     *
      * @param catId
      * @return
      */
-    CategoryDto retrieveCategoryById (Integer catId);
+    CategoryDto retrieveCategoryById(Integer catId);
 
     /**
-     *
      * @param from
      * @param size
      * @return

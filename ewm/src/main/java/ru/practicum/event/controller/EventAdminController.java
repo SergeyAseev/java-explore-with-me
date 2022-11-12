@@ -34,20 +34,20 @@ public class EventAdminController {
     }
 
     @PutMapping("/{eventId}")
-    public EventFullDto updateEvent (@PathVariable Long eventId,
-                                     @RequestBody EventFullDto eventFullDto) {
+    public EventFullDto updateEvent(@PathVariable Long eventId,
+                                    @RequestBody EventFullDto eventFullDto) {
         log.info("Update event = {}", eventFullDto);
         return eventService.updateEvent(eventFullDto, eventId);
     }
 
     @PatchMapping("/{eventId}/publish")
-    public EventFullDto publishEvent (@PathVariable Long eventId) {
+    public EventFullDto publishEvent(@PathVariable Long eventId) {
         log.info("Publish the event with ID = {}", eventId);
         return eventService.publishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
-    public EventFullDto rejectEvent (@PathVariable Long eventId) {
+    public EventFullDto rejectEvent(@PathVariable Long eventId) {
         log.info("Reject the event with ID = {}", eventId);
         return eventService.rejectEvent(eventId);
     }

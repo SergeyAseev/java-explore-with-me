@@ -25,7 +25,7 @@ public class CategoryAdminController {
     }
 
     @PatchMapping
-    public CategoryDto updateCategory(@RequestBody @Valid CategoryDto categoryDto){
+    public CategoryDto updateCategory(@RequestBody @Valid CategoryDto categoryDto) {
         log.info("Update category {}", categoryDto);
         return categoryService.updateCategory(categoryDto);
     }

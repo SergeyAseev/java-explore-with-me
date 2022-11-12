@@ -48,10 +48,10 @@ public class Event {
     @Column(name = "paid")
     private Boolean paid;
 
-    @Column(name = "requestModeration")
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
 
-    @Column(name = "participantLimit")
+    @Column(name = "participant_limit")
     private Integer participantLimit;
 
     @ManyToOne
@@ -64,7 +64,8 @@ public class Event {
     @Column(name = "publishedOn")
     private LocalDateTime publishedOn;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_state")
     private EventState eventState;
 
     @Embedded

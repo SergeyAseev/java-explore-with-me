@@ -28,15 +28,15 @@ public class EventPublicController {
 
     @GetMapping
     public List<EventShortDto> retrievePublicEvents(
-                         @RequestParam(name = "text", required = false) String text,
-                         @RequestParam(name = "categories", required = false) List<Integer> catIds,
-                         @RequestParam(name = "paid", required = false) Boolean paid,
-                         @RequestParam(name = "rangeStart", required = false) String rangeStart,
-                         @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
-                         @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") Boolean onlyAvailable,
-                         @RequestParam(name = "sort", required = false) String sortStr,
-                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                         @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+            @RequestParam(name = "text", required = false) String text,
+            @RequestParam(name = "categories", required = false) List<Integer> catIds,
+            @RequestParam(name = "paid", required = false) Boolean paid,
+            @RequestParam(name = "rangeStart", required = false) String rangeStart,
+            @RequestParam(name = "rangeEnd", required = false) String rangeEnd,
+            @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") Boolean onlyAvailable,
+            @RequestParam(name = "sort", required = false) String sortStr,
+            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
 
         Sort sort = Sort.from(sortStr)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown type of sort: " + sortStr));
