@@ -1,5 +1,6 @@
 package ru.practicum.categories.controller;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class CategoryAdminController {
     }
 
     @DeleteMapping(value = "/{catId}")
-    public void removeCategory(@PathVariable Integer catId) {
+    public void removeCategory(@PathVariable @NonNull Integer catId) {
         log.info("Remove category with ID = {}", catId);
         categoryService.removeCategory(catId);
     }

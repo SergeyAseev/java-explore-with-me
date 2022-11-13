@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.CategoryMapper;
 import ru.practicum.categories.model.Category;
+import ru.practicum.exception.ExistsElementException;
 import ru.practicum.exception.NotFoundException;
 
 import java.util.List;
@@ -25,16 +26,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
 
+        if (getCategoryById(categoryDto.getId()) != null) {
+            throw new ExistsElementException(String.format("Category with ID %s already in use", categoryDto.getId()));
+        }
         Category category = CategoryMapper.toCategory(categoryDto);
-        return CategoryMapper.toCategoryDto(categoryRepository.save(category));
+        categoryRepository.save(category);
+        return categoryDto;
     }
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
 
-        getCategoryById(categoryDto.getId());
+        if (getCategoryById(categoryDto.getId()) != null) {
+            throw new ExistsElementException(String.format("Category with ID %s already in use", categoryDto.getId()));
+        }
         Category category = CategoryMapper.toCategory(categoryDto);
-        //TODO validCat ?
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
 
@@ -42,7 +48,13 @@ public class CategoryServiceImpl implements CategoryService {
     public void removeCategory(Integer catId) {
 
         getCategoryById(catId);
-        categoryRepository.deleteById(catId);
+        Category category = categoryRepository.findById(catId)
+                .orElseThrow(() -> new NotFoundException(String.format("Category with ID %s not found", catId)));
+        if (!category.getEvents().isEmpty()) {
+            throw new ExistsElementException(String.format("Category %s contains events and can't be removed", catId));
+        } else {
+            categoryRepository.deleteById(catId);
+        }
     }
 
     @Override

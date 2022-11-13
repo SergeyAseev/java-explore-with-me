@@ -1,13 +1,18 @@
 package ru.practicum.event.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import ru.practicum.Compilation.model.Compilation;
 import ru.practicum.categories.model.Category;
+import ru.practicum.eventRequest.model.EventRequest;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -42,7 +47,7 @@ public class Event {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "eventDate")
+    @Column(name = "event_date")
     private LocalDateTime eventDate;
 
     @Column(name = "paid")
@@ -55,13 +60,13 @@ public class Event {
     private Integer participantLimit;
 
     @ManyToOne
-    @Column(name = "initiator_id")
-    private User initiatorId;
+    @JoinColumn(name = "initiator_id")
+    private User initiator;
 
-    @Column(name = "createdOn")
+    @Column(name = "created_on")
     private LocalDateTime createdOn;
 
-    @Column(name = "publishedOn")
+    @Column(name = "published_on")
     private LocalDateTime publishedOn;
 
     @Enumerated(EnumType.STRING)
@@ -70,5 +75,15 @@ public class Event {
 
     @Embedded
     private Location location;
+
+    @OneToMany(mappedBy = "event",
+            cascade = CascadeType.MERGE,
+            fetch = FetchType.LAZY)
+    @JsonIgnore
+    Set<EventRequest> requests = new HashSet<>();
+
+    @ManyToMany(mappedBy = "events")
+    @JsonIgnore
+    Set<Compilation> compilations = new HashSet<>();
 
 }

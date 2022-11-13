@@ -6,19 +6,19 @@ import java.util.List;
 
 public interface UserService {
 
-    /**
-     * @param userDto
-     * @return
+    /** Метод создание пользователя
+     * @param userDto экземпляр пользователя-дто для создания
+     * @return экземпляр созданного пользователя
      */
     UserDto createUser(UserDto userDto);
 
-    /**
-     * @return
+    /** Метод получения всех или выбранных пользователей
+     * @return Список пользователей
      */
     List<UserDto> retrieveUsers(List<Long> userIds, Integer from, Integer size);
 
-    /**
-     * @param userId
+    /** метод удаления пользователя
+     * @param userId ID пользователя, которого удаляем
      */
     void deleteUser(Long userId);
 }

@@ -1,9 +1,11 @@
 package ru.practicum.categories.model;
 
 import lombok.*;
+import ru.practicum.event.model.Event;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -22,4 +24,7 @@ public class Category {
     @NotBlank
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "category")
+    private Set<Event> events;
 }

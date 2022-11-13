@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
                 log.warn("User with email {} exists", user.getEmail());
                 throw new ExistsElementException("User exists");
             }
-
         } else {
             throw new ValidationException("Email not found");
         }
