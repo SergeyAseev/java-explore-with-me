@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.dto.EventFullDto;
-import ru.practicum.event.dto.EventMapper;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
@@ -103,6 +102,6 @@ public class EventServiceImpl implements EventService {
 
     public Event getEventById(Long eventId) {
         return eventRepository.findById(eventId)
-                .orElseThrow(()-> new NotFoundException(String.format("Event with ID = %s not found", eventId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Event with ID = %s not found", eventId)));
     }
 }
