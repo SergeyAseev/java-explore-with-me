@@ -32,7 +32,7 @@ public class CompilationImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> retrieveAllCompilations(Boolean pinned, Integer from, Integer size) {
-        Pageable pageable = PageRequest.of(from/size, size);
+        Pageable pageable = PageRequest.of(from / size, size);
         if (Objects.isNull(pinned)) {
             compilationRepository.findAll(pageable);
         }
@@ -71,7 +71,7 @@ public class CompilationImpl implements CompilationService {
 
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("There is no such compilation with ID = %s", compId)));
-        Event event  = eventRepository.findById(eventId).orElseThrow( () ->
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with ID %s not found", eventId)));
 
         Set<Event> events = compilation.getEvents();
@@ -84,7 +84,7 @@ public class CompilationImpl implements CompilationService {
 
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() ->
                 new NotFoundException(String.format("There is no such compilation with ID = %s", compId)));
-        Event event  = eventRepository.findById(eventId).orElseThrow( () ->
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with ID %s not found", eventId)));
 
         Set<Event> events = compilation.getEvents();
