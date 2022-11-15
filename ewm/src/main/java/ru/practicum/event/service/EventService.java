@@ -2,7 +2,11 @@ package ru.practicum.event.service;
 
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.NewEventDto;
+import ru.practicum.event.model.EventState;
+import ru.practicum.eventRequest.dto.EventRequestDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
@@ -12,14 +16,15 @@ public interface EventService {
     /**
      * @return
      */
-    List<EventFullDto> retrieveEvents();
+    List<EventFullDto> retrieveEvents(List<Long> userIds, List<EventState> stateIds, List<Integer> catIds,
+                                      LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
     /**
      * @param eventFullDto
      * @param eventId
      * @return
      */
-    EventFullDto updateEvent(EventFullDto eventFullDto, Long eventId);
+    EventFullDto updateEvent(NewEventDto eventFullDto, Long eventId);
 
     /**
      * @param eventId
@@ -45,7 +50,7 @@ public interface EventService {
      * @param eventId
      * @return
      */
-    List<EventFullDto> retrievePublicEventById(Long eventId);
+    EventFullDto retrievePublicEventById(Long eventId);
     //public controller end
 
     //private controller start
@@ -63,21 +68,21 @@ public interface EventService {
      * @param eventFullDto
      * @return
      */
-    EventFullDto updateEventByCreator(Long userId, EventFullDto eventFullDto);
+    EventFullDto updateEventByCreator(Long userId, NewEventDto eventFullDto);
 
     /**
      * @param userId
      * @param eventFullDto
      * @return
      */
-    EventFullDto createEvent(Long userId, EventFullDto eventFullDto);
+    EventFullDto createEvent(Long userId, NewEventDto eventFullDto);
 
     /**
      * @param userId
      * @param eventId
      * @return
      */
-    List<EventFullDto> retrieveEventsByIdForCreator(Long userId, Long eventId);
+    EventFullDto retrieveEventByIdForCreator(Long userId, Long eventId);
 
     /**
      * @param userId
@@ -91,21 +96,21 @@ public interface EventService {
      * @param eventId
      * @return
      */
-    List<EventFullDto> retrieveRequestEventByUser(Long userId, Long eventId);
+    List<EventRequestDto> retrieveRequestEventByUser(Long userId, Long eventId);
 
     /**
      * @param userId
      * @param eventId
      * @return
      */
-    EventFullDto confirmRequestForEvent(Long userId, Long eventId);
+    EventRequestDto confirmRequestForEvent(Long userId, Long eventId, Long reqId);
 
     /**
      * @param userId
      * @param eventId
      * @return
      */
-    EventFullDto rejectRequestForEvent(Long userId, Long eventId);
+    EventRequestDto rejectRequestForEvent(Long userId, Long eventId, Long reqId);
 
     //private controller end
 }

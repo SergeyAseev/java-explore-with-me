@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS "events" (
     "participant_limit" int,
     "initiator_id" BIGINT NOT NULL,
     "created_on" timestamp NOT NULL,
-    "published_on" timestamp NOT NULL,
+    "published_on" timestamp,
     "event_state" varchar,
     "lon" float,
     "lat" float
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS "event_requests" (
                                                 "id" SERIAL PRIMARY KEY,
                                                 "user_id" BIGINT NOT NULL,
                                                 "event_id" BIGINT NOT NULL,
-                                                "state" varchar,
+                                                "status" varchar,
                                                 "created" timestamp NOT NULL
 );
 

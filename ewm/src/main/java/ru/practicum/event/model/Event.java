@@ -54,7 +54,7 @@ public class Event {
     private Boolean paid;
 
     @Column(name = "request_moderation")
-    private Boolean requestModeration;
+    private Boolean requestModeration = true;
 
     @Column(name = "participant_limit")
     private Integer participantLimit;
@@ -71,10 +71,12 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_state")
-    private EventState eventState;
+    private EventState state;
 
     @Embedded
     private Location location;
+
+    //private Long views = 0L;
 
     @OneToMany(mappedBy = "event",
             cascade = CascadeType.MERGE,

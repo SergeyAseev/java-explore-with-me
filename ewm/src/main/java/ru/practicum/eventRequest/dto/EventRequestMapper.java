@@ -9,9 +9,10 @@ public class EventRequestMapper {
     public static EventRequestDto toEventRequestDto(EventRequest eventRequest) {
         return EventRequestDto.builder()
                 .id(eventRequest.getId())
-                .userId(eventRequest.getUser().getId())
-                .eventId(eventRequest.getEvent().getId())
+                .requester(eventRequest.getUser().getId())
+                .event(eventRequest.getEvent().getId())
                 .status(eventRequest.getStatus())
+                .created(eventRequest.getCreated())
                 .build();
     }
 

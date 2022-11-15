@@ -26,22 +26,19 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
 
-        if (getCategoryById(categoryDto.getId()) != null) {
-            throw new ExistsElementException(String.format("Category with ID %s already in use", categoryDto.getId()));
-        }
         Category category = CategoryMapper.toCategory(categoryDto);
-        categoryRepository.save(category);
-        return categoryDto;
+        return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
 
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
 
-        if (getCategoryById(categoryDto.getId()) != null) {
-            throw new ExistsElementException(String.format("Category with ID %s already in use", categoryDto.getId()));
-        }
-        Category category = CategoryMapper.toCategory(categoryDto);
-        return CategoryMapper.toCategoryDto(categoryRepository.save(category));
+        getCategoryById(categoryDto.getId());
+
+        Category oldCategory = CategoryMapper.toCategory(categoryDto);
+        oldCategory.setName(categoryDto.getName());
+        categoryRepository.save(oldCategory);
+        return CategoryMapper.toCategoryDto(oldCategory);
     }
 
     @Override

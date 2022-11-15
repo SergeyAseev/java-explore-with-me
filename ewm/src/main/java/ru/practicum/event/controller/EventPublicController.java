@@ -45,7 +45,7 @@ public class EventPublicController {
     }
 
     @GetMapping("/{id}")
-    public List<EventFullDto> retrievePublicEventById(@PathVariable Long id) {
+    public EventFullDto retrievePublicEventById(@PathVariable Long id) {
 
         log.info("Retrieve event with ID = {}", id);
         return eventService.retrievePublicEventById(id);

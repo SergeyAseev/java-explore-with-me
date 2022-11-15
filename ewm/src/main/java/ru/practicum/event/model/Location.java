@@ -1,15 +1,17 @@
 package ru.practicum.event.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Embeddable;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
 @Embeddable
 public class Location {
 
-    Double lon;
-    Double lat;
+    private Double lon;
+    private Double lat;
 }

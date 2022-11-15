@@ -1,6 +1,7 @@
 package ru.practicum.Compilation.service;
 
 import ru.practicum.Compilation.dto.CompilationDto;
+import ru.practicum.Compilation.dto.NewCompilationDto;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ public interface CompilationService {
     CompilationDto retrieveCompilationById(Integer compId);
 
     /**
-     * @param compilationDto
+     * @param newCompilationDto
      * @return
      */
-    CompilationDto addNewCompilation(CompilationDto compilationDto);
+    CompilationDto addNewCompilation(NewCompilationDto newCompilationDto);
 
     /**
      * @param compId
