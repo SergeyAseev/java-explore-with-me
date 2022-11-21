@@ -14,8 +14,12 @@ import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.model.Location;
+import ru.practicum.event.model.Sort;
 import ru.practicum.eventRequest.dto.EventRequestDto;
 import ru.practicum.eventRequest.dto.EventRequestMapper;
+import ru.practicum.eventRequest.model.EventRequest;
+import ru.practicum.eventRequest.model.RequestState;
+import ru.practicum.eventRequest.service.EventRequestRepository;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 
@@ -31,6 +35,9 @@ public class EventServiceImpl implements EventService {
     @Autowired
     private final EventRepository eventRepository;
 
+    @Autowired
+    private final EventRequestRepository eventRequestRepository;
+
     @Override
     public List<EventFullDto> retrieveEvents(List<Long> userIds, List<EventState> stateIds, List<Integer> catIds,
                                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
@@ -44,11 +51,6 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto updateEvent(NewEventDto newEventDto, Long eventId) {
 
-        getEventById(eventId);
-
-/*        if (LocalDateTime.now().plusHours(2).isAfter(newEventDto.getEventDate())) {
-            throw new ValidationException("Not enough time before event");
-        }*/
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new NotFoundException(String.format("Event with ID %s not found", eventId)));
         checkChanges(newEventDto, event);
@@ -68,6 +70,11 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
+    /**
+     *
+     * @param newEventDto
+     * @param event
+     */
     private void checkChanges(NewEventDto newEventDto, Event event) {
 
         if (newEventDto.getAnnotation() != null) {
@@ -127,7 +134,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> retrievePublicEvents() {
+    public List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, String rangeStart,
+                                                    String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size) {
         return null;
     }
 
@@ -152,8 +160,23 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto updateEventByCreator(Long userId, NewEventDto eventFullDto) {
-        return null;
+    public EventFullDto updateEventByCreator(Long userId, NewEventDto newEventDto) {
+
+        if (LocalDateTime.now().plusHours(2).isAfter(newEventDto.getEventDate())) {
+            throw new ValidationException(String.format("wrong time %s", newEventDto.getEventDate().toString()));
+        }
+        Event event = EventMapper.toEvent(userId, newEventDto);
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new ValidationException("Only initiator or admin can edit event");
+        }
+        if (event.getState().equals(EventState.PUBLISHED)) {
+            throw new ValidationException("We can't edit a published event");
+        }
+        if(event.getState().equals(EventState.CANCELED)) {
+            event.setState(EventState.PENDING);
+        }
+
+        return updateEvent(newEventDto, event.getId());
     }
 
     @Override
@@ -198,17 +221,58 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventRequestDto confirmRequestForEvent(Long userId, Long eventId, Long reqId) {
 
+        Event event = getEventById(eventId);
+        EventRequest currentEventRequest = eventRequestRepository.findById(reqId)
+                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s not found", reqId)));
 
-        return null;
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new ValidationException("Only initiator can confirm a request");
+        }
+        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
+            throw new ValidationException("No need to confirm");
+        }
+        if (isRequestLimitReached(event)) {
+            throw new ValidationException("No more requests available");
+        }
+        currentEventRequest.setStatus(RequestState.CONFIRMED);
+        if (isRequestLimitReached(event)) {
+            event.getRequests().removeIf(e-> !e.getStatus().equals(RequestState.CONFIRMED));
+        }
+        eventRepository.save(event);
+
+        return EventRequestMapper.toEventRequestDto(currentEventRequest);
     }
 
     @Override
     public EventRequestDto rejectRequestForEvent(Long userId, Long eventId, Long reqId) {
-        return null;
+
+        Event event = getEventById(eventId);
+        EventRequest currentEventRequest = eventRequestRepository.findById(reqId)
+                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s not found", reqId)));
+        if (!event.getInitiator().getId().equals(userId)) {
+            throw new ValidationException("Only initiator can reject a request");
+        }
+
+        event.getRequests().remove(currentEventRequest);
+        currentEventRequest.setStatus(RequestState.REJECTED);
+        eventRepository.save(event);
+
+        return EventRequestMapper.toEventRequestDto(currentEventRequest);
     }
 
     public Event getEventById(Long eventId) {
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with ID = %s not found", eventId)));
+    }
+
+    /**
+     *
+     * @param event
+     * @return
+     */
+    private boolean isRequestLimitReached(Event event) {
+
+        long limitConfirmed = event.getRequests().stream().filter(e-> e.getStatus().equals(RequestState.CONFIRMED)).count();
+        return limitConfirmed >= event.getParticipantLimit();
     }
 }

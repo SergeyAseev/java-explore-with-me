@@ -26,18 +26,18 @@ public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> retrieveEvents(@RequestParam(name = "users", required = false) List<Long> userIds,
-                                             @RequestParam(name = "states", required = false) List<EventState> stateIds,
-                                             @RequestParam(name = "categories", required = false) List<Integer> catIds,
+    public List<EventFullDto> retrieveEvents(@RequestParam(required = false) List<Long> users,
+                                             @RequestParam(required = false) List<EventState> states,
+                                             @RequestParam(required = false) List<Integer> categories,
                                              @RequestParam(name = "rangeStart", required = false)
                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                              @RequestParam(name = "rangeEnd", required = false)
                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-                                             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                             @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                             @PositiveOrZero @RequestParam( defaultValue = "0") Integer from,
+                                             @Positive @RequestParam(defaultValue = "10") Integer size) {
 
         log.info("Retrieve events");
-        return eventService.retrieveEvents(userIds, stateIds, catIds, rangeStart, rangeEnd, from, size);
+        return eventService.retrieveEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PutMapping("{eventId}")

@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class ErrorHandler {
+public class ErrorHandler extends RuntimeException {
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleValidateException(
@@ -43,4 +43,14 @@ public class ErrorHandler {
         return new ResponseEntity<>(Map.of("error",
                 e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+/*    @ExceptionHandler
+    public ResponseEntity<?> validationException(ValidationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> notFoundException(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }*/
 }

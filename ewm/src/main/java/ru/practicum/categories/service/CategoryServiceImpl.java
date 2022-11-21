@@ -5,14 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.dto.CategoryMapper;
 import ru.practicum.categories.model.Category;
+import ru.practicum.exception.ErrorHandler;
 import ru.practicum.exception.ExistsElementException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidationException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,6 +32,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
 
+        if (categoryRepository.findByName(categoryDto.getName()) != null) {
+            throw new ExistsElementException("Category already exist");
+        }
         Category category = CategoryMapper.toCategory(categoryDto);
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
@@ -34,6 +43,10 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(CategoryDto categoryDto) {
 
         getCategoryById(categoryDto.getId());
+
+        if (categoryRepository.findByName(categoryDto.getName()) != null) {
+            throw new ExistsElementException("Category with this name already exist");
+        }
 
         Category oldCategory = CategoryMapper.toCategory(categoryDto);
         oldCategory.setName(categoryDto.getName());
@@ -56,7 +69,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto retrieveCategoryById(Integer catId) {
-
         return getCategoryById(catId);
     }
 

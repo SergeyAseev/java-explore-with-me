@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -17,7 +18,8 @@ public class CompilationDto {
     private Integer id;
     private Boolean pinned;
     private String title;
-    private Set<EventShortDto> events;
+    @Builder.Default
+    private Set<EventShortDto> events = new HashSet<>();
 
     @Getter
     @Setter

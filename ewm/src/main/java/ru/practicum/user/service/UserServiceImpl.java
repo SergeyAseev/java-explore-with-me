@@ -25,6 +25,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     public UserDto createUser(UserDto userDto) {
+
+        if (userRepository.findByName(userDto.getName()) != null) {
+            throw new ExistsElementException("User with this name already exist");
+        }
         User user = UserMapper.toUser(userDto);
         if (user.getEmail() != null) {
             try {

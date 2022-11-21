@@ -3,6 +3,7 @@ package ru.practicum.event.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -16,6 +17,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/events")
@@ -33,14 +35,14 @@ public class EventPrivateController {
     }
 
     @PatchMapping
-    public EventFullDto updateEventByCreator(@PathVariable @NotNull Long userId,
-                                             @RequestBody @Valid NewEventDto eventFullDto) {
+    public EventFullDto updateEventByCreator(@PathVariable Long userId,
+                                             @RequestBody NewEventDto eventFullDto) {
         log.info("Update event {} by creator with ID = {}", eventFullDto, userId);
         return eventService.updateEventByCreator(userId, eventFullDto);
     }
 
     @PostMapping
-    public EventFullDto createEvent(@PathVariable @NotNull Long userId,
+    public EventFullDto createEvent(@PathVariable Long userId,
                                     @RequestBody @Valid NewEventDto eventFullDto) {
         log.info("Create event {} by creator with ID = {}", eventFullDto, userId);
         return eventService.createEvent(userId, eventFullDto);

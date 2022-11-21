@@ -29,18 +29,18 @@ public class Event {
     private Long id;
 
     @Column(name = "title")
-    @Max(120)
-    @Min(3)
+/*    @Max(120)
+    @Min(3)*/
     private String title;
 
     @Column(name = "annotation")
-    @Max(2000)
-    @Min(20)
+/*    @Max(2000)
+    @Min(20)*/
     private String annotation;
 
     @Column(name = "description")
-    @Max(7000)
-    @Min(20)
+/*    @Max(7000)
+    @Min(20)*/
     private String description;
 
     @ManyToOne
@@ -76,8 +76,6 @@ public class Event {
     @Embedded
     private Location location;
 
-    //private Long views = 0L;
-
     @OneToMany(mappedBy = "event",
             cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
@@ -87,5 +85,4 @@ public class Event {
     @ManyToMany(mappedBy = "events")
     @JsonIgnore
     Set<Compilation> compilations = new HashSet<>();
-
 }

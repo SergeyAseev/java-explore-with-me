@@ -54,7 +54,9 @@ public class CompilationImpl implements CompilationService {
         Compilation compilation = CompilationMapper.toCompilation(newCompilationDto);
         compilationRepository.save(compilation);
 
-
+        compilation.getEvents().stream()
+                .map(e -> addEventInCompilation(compilation.getId(), e.getId()))
+                .collect(Collectors.toList());
         return CompilationMapper.toCompilDto(compilation);
     }
 

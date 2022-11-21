@@ -4,6 +4,7 @@ import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.EventState;
+import ru.practicum.event.model.Sort;
 import ru.practicum.eventRequest.dto.EventRequestDto;
 
 import java.time.LocalDateTime;
@@ -44,7 +45,9 @@ public interface EventService {
     /**
      * @return
      */
-    List<EventShortDto> retrievePublicEvents();
+    List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, String rangeStart,
+                                             String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size);
+
 
     /**
      * @param eventId
