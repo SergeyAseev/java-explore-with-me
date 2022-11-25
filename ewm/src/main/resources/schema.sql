@@ -10,14 +10,15 @@ CREATE TABLE IF NOT EXISTS "categories" (
     );
 
 CREATE TABLE IF NOT EXISTS "events" (
-                                        "id" SERIAL PRIMARY KEY,
-                                        "title" varchar(120) NOT NULL,
+    "id" SERIAL PRIMARY KEY,
+    "title" varchar(120) NOT NULL,
     "annotation" varchar(2000),
     "description" varchar(7000),
     "category_id" int NOT NULL,
     "event_date" timestamp NOT NULL,
     "paid" boolean DEFAULT false,
     "request_moderation" boolean DEFAULT true,
+    "confirmed_requests" int,
     "participant_limit" int,
     "initiator_id" BIGINT NOT NULL,
     "created_on" timestamp NOT NULL,

@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndPointStatsClientDto;
-import ru.practicum.dto.ViewDto;
+import ru.practicum.model.ViewStats;
 import ru.practicum.service.StatsService;
 
 import javax.validation.Valid;
@@ -24,21 +24,21 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public void addHit(@Valid @RequestBody EndPointStatsClientDto endPointStatsClientDto) {
+    public EndPointStatsClientDto save(@Valid @RequestBody EndPointStatsClientDto endPointStatsClientDto) {
 
         log.info("");//TODO
-        statsService.addHit(endPointStatsClientDto);
+        return statsService.save(endPointStatsClientDto);
     }
 
     @GetMapping("/stats")
-    public List<ViewDto> getViewStats(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endDate,
-            @RequestParam(required = false) List<String> uriIds,
+    public List<ViewStats> getViewStats(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+            @RequestParam(required = false) List<String> uris,
             @RequestParam(required = false, defaultValue = "false")
             Boolean unique) {
 
         log.info("");//TODO
-        return statsService.getViewStats(startDate, endDate, uriIds, unique);
+        return statsService.getViewStats(start, end, uris, unique);
     }
 }

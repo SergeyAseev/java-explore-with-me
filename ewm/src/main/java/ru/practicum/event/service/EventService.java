@@ -45,8 +45,8 @@ public interface EventService {
     /**
      * @return
      */
-    List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, String rangeStart,
-                                             String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size);
+    List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, LocalDateTime rangeStart,
+                                             LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size);
 
 
     /**

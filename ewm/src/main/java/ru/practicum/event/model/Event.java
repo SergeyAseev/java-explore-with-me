@@ -2,14 +2,11 @@ package ru.practicum.event.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import ru.practicum.Compilation.model.Compilation;
 import ru.practicum.categories.model.Category;
 import ru.practicum.eventRequest.model.EventRequest;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,7 +79,13 @@ public class Event {
     @JsonIgnore
     Set<EventRequest> requests = new HashSet<>();
 
-    @ManyToMany(mappedBy = "events")
-    @JsonIgnore
-    Set<Compilation> compilations = new HashSet<>();
+    private Integer confirmedRequests;
+
+    public void incrementConfirmedRequests() {
+        confirmedRequests++;
+    }
+
+    public void decrementConfirmedRequests() {
+        confirmedRequests--;
+    }
 }

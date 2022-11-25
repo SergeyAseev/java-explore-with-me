@@ -3,7 +3,8 @@ package ru.practicum.event.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,14 +14,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class NewEventDto {
 
-    @Max(2000)
-    @Min(20)
+    private Long eventId;
+    /*    @Max(2000)
+        @Min(20)*/
     @NotBlank
     private String annotation;
     @NotNull
     private Integer category;
-    @Max(7000)
-    @Min(20)
+    /*    @Max(7000)
+        @Min(20)*/
     @NotBlank
     private String description;
     @NotNull
@@ -31,8 +33,8 @@ public class NewEventDto {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    @Max(120)
-    @Min(3)
+    /*    @Max(120)
+        @Min(3)*/
     private String title;
 
 

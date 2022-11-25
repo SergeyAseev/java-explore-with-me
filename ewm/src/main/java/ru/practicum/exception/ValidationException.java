@@ -7,6 +7,6 @@ public class ValidationException extends RuntimeException {
 
     public ValidationException(String message) {
         super(message);
-        log.info("Something wrong", message); //TODO
+        log.info(message); //TODO
     }
 }

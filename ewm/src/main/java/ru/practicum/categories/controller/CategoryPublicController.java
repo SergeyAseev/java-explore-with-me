@@ -1,6 +1,5 @@
 package ru.practicum.categories.controller;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class CategoryPublicController {
     private final CategoryService categoryService;
 
     @GetMapping(value = "/{catId}")
-    public CategoryDto retrieveCategoryById(@PathVariable @NonNull Integer catId) {
+    public CategoryDto retrieveCategoryById(@PathVariable Integer catId) {
         log.info("Get category with ID = {}", catId);
         return categoryService.retrieveCategoryById(catId);
     }

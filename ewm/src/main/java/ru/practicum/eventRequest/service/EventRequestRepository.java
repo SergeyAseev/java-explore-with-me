@@ -9,4 +9,6 @@ import java.util.List;
 public interface EventRequestRepository extends JpaRepository<EventRequest, Long> {
 
     List<EventRequest> findAllByUser(User user);
+
+    List<EventRequest> findAllByEventId(Long eventId);
 }

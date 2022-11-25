@@ -14,6 +14,7 @@ import ru.practicum.event.service.EventService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -33,8 +34,8 @@ public class EventPublicController {
             @RequestParam(name = "text", required = false) String text,
             @RequestParam(name = "categories", required = false) List<Integer> catIds,
             @RequestParam(name = "paid", required = false) Boolean paid,
-            @RequestParam(name = "rangeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")  String rangeStart,
-            @RequestParam(name = "rangeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") String rangeEnd,
+            @RequestParam(name = "rangeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @RequestParam(name = "rangeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
             @RequestParam(name = "onlyAvailable", required = false, defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(name = "sort", required = false) String sortStr,
             @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
@@ -52,7 +53,7 @@ public class EventPublicController {
     public EventFullDto retrievePublicEventById(@PathVariable Long id, HttpServletRequest request) {
 
         log.info("Retrieve event with ID = {}", id);
-        statsClient.save(request);
+        statsClient.save(request); //TODO ломает тест на получение события
         return eventService.retrievePublicEventById(id);
     }
 }

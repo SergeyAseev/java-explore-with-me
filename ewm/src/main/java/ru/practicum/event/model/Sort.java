@@ -13,6 +13,6 @@ public enum Sort {
                 return Optional.of(sort);
             }
         }
-        return Optional.empty();
+        return Optional.of(EVENT_DATE);
     }
 }

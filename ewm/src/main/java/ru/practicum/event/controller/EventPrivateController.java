@@ -27,7 +27,7 @@ public class EventPrivateController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> retrieveEventsByCreator(@PathVariable @NotNull Long userId,
+    public List<EventFullDto> retrieveEventsByCreator(@PathVariable Long userId,
                                                       @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                       @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Retrieve events by creator with ID = {}", userId);
@@ -36,7 +36,7 @@ public class EventPrivateController {
 
     @PatchMapping
     public EventFullDto updateEventByCreator(@PathVariable Long userId,
-                                             @RequestBody NewEventDto eventFullDto) {
+                                             @RequestBody @Valid NewEventDto eventFullDto) {
         log.info("Update event {} by creator with ID = {}", eventFullDto, userId);
         return eventService.updateEventByCreator(userId, eventFullDto);
     }
@@ -49,8 +49,8 @@ public class EventPrivateController {
     }
 
     @GetMapping("{eventId}")
-    public EventFullDto retrieveEventByIdForCreator(@PathVariable @NotNull Long userId,
-                                                    @PathVariable @NotNull Long eventId) {
+    public EventFullDto retrieveEventByIdForCreator(@PathVariable Long userId,
+                                                    @PathVariable Long eventId) {
         log.info("Retrieve event with ID = {}", eventId);
         return eventService.retrieveEventByIdForCreator(userId, eventId);
     }
@@ -63,8 +63,8 @@ public class EventPrivateController {
     }
 
     @GetMapping("{eventId}/requests")
-    public List<EventRequestDto> retrieveRequestEventByUser(@PathVariable @NotNull Long userId,
-                                                            @PathVariable @NotNull Long eventId) {
+    public List<EventRequestDto> retrieveRequestEventByUser(@PathVariable Long userId,
+                                                            @PathVariable Long eventId) {
         log.info("Retrieve info for event's request by user with ID = {} for event with ID = {}", userId, eventId);
         return eventService.retrieveRequestEventByUser(userId, eventId);
     }

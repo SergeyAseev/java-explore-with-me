@@ -20,7 +20,7 @@ public class EventMapper {
                         .id(event.getCategory().getId())
                         .name(event.getCategory().getName())
                         .build())
-                //.confirmedRequests(event.getRequests().size())
+                .confirmedRequests(event.getConfirmedRequests())
                 .eventDate(event.getEventDate())
                 .paid(event.getPaid())
                 .requestModeration(event.getRequestModeration())
@@ -36,17 +36,21 @@ public class EventMapper {
                         .lat(event.getLocation().getLat())
                         .lon(event.getLocation().getLon())
                         .build())
-                //.views(event.getViews())
                 .build();
     }
 
     public static Event toEvent(Long userId, NewEventDto newEventDto) {
         return Event.builder()
+                .id(newEventDto.getEventId())
                 .title((newEventDto.getTitle()))
                 .annotation(newEventDto.getAnnotation())
                 .description(newEventDto.getDescription())
-                .category(Category.builder().id(newEventDto.getCategory()).build())
-                .initiator(User.builder().id(userId).build())
+                .category(Category.builder()
+                        .id(newEventDto.getCategory())
+                        .build())
+                .initiator(User.builder()
+                        .id(userId)
+                        .build())
                 .createdOn(LocalDateTime.now())
                 .state(EventState.PENDING)
                 .eventDate(newEventDto.getEventDate())
@@ -61,7 +65,6 @@ public class EventMapper {
     }
 
     public static EventShortDto toEventShortDto(Event event) {
-
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -69,7 +72,7 @@ public class EventMapper {
                         .id(event.getCategory().getId())
                         .name(event.getCategory().getName())
                         .build())
-                //.confirmedRequests(event.getRequests().size())
+                .confirmedRequests(event.getConfirmedRequests())
                 .eventDate(event.getEventDate())
                 .initiator(EventShortDto.UserShortDto.builder()
                         .id(event.getInitiator().getId())
@@ -77,7 +80,6 @@ public class EventMapper {
                         .build())
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                //.views(event.getViews())
                 .build();
     }
 

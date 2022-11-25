@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Map;
 
 @Slf4j
@@ -16,14 +18,19 @@ public class ErrorHandler extends RuntimeException {
     public ResponseEntity<Map<String, String>> handleValidateException(
             final ValidationException e) {
         log.info(e.getMessage());
+        //String errors = Collections.singletonList(e.printStackTrace());
+
+        StringWriter errors = new StringWriter();
+        PrintWriter pw = new PrintWriter(errors);
+        e.printStackTrace(pw);
         return new ResponseEntity<>(Map.of("error",
-                e.getMessage()), HttpStatus.BAD_REQUEST);
+                errors.toString()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleNotFoundException(
             final NotFoundException e) {
-        log.info(e.getMessage());
+        log.info(e.getMessage(), e);
         return new ResponseEntity<>(Map.of("error",
                 e.getMessage()), HttpStatus.NOT_FOUND);
     }

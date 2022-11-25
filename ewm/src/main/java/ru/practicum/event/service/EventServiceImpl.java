@@ -24,7 +24,10 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,10 +45,14 @@ public class EventServiceImpl implements EventService {
     public List<EventFullDto> retrieveEvents(List<Long> userIds, List<EventState> stateIds, List<Integer> catIds,
                                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
 
+        Pageable pageable = PageRequest.of(from / size, size);
+        if (rangeStart == null) rangeStart = LocalDateTime.now();
+        return eventRepository.searchEvents(userIds, stateIds, catIds,
+                        rangeStart, rangeEnd, pageable)
+                .stream()
+                .map(EventMapper::toEventFullDto)
+                .collect(Collectors.toList());
 
-        return null;
-/*        return eventRepository.findAllByParams(userIds, stateIds, catIds, null, rangeStart, rangeEnd,
-                null,  from, size).stream().map(EventMapper::toEventFullDto).collect(Collectors.toList());*/
     }
 
     @Override
@@ -71,7 +78,6 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     *
      * @param newEventDto
      * @param event
      */
@@ -115,28 +121,64 @@ public class EventServiceImpl implements EventService {
 
         event.setState(EventState.PUBLISHED);
         event.setPublishedOn(LocalDateTime.now());
-        eventRepository.save(event);
-        return EventMapper.toEventFullDto(event);
+
+        return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
     public EventFullDto rejectEvent(Long eventId) {
 
         Event event = getEventById(eventId);
-
         if (event.getState().equals(EventState.PUBLISHED)) {
             throw new ValidationException("You are ADMIN, but you don't have power in this case");
         }
-
         event.setState(EventState.CANCELED);
-        eventRepository.save(event);
-        return EventMapper.toEventFullDto(event);
+
+        return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
-    public List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, String rangeStart,
-                                                    String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size) {
-        return null;
+    public List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, LocalDateTime rangeStart,
+                                                    LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size) {
+
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
+        if (Objects.isNull(rangeStart)) {
+            rangeStart = LocalDateTime.now();
+        }
+
+        List<EventShortDto> events = eventRepository.findEvents(text, catIds, paid, rangeStart, rangeEnd)
+                .stream()
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toList());
+
+
+        if (onlyAvailable) {
+            events = events.stream()
+                    //.filter(e -> e.getConfirmedRequests() < e.getParticipantLimit() || e.getParticipantLimit() == 0)
+                    .filter(e -> isRequestLimitReached(getEventById(e.getId())))
+                    .collect(Collectors.toList());
+        }
+        if (sort != null) {
+            switch (sort) {
+                case EVENT_DATE:
+                    events = events.stream()
+                            .sorted(Comparator.comparing(EventShortDto::getEventDate))
+                            .collect(Collectors.toList());
+                    break;
+                case VIEWS:
+                    events = events.stream()
+                            .sorted(Comparator.comparingLong(EventShortDto::getViews))
+                            .collect(Collectors.toList());
+                    break;
+            }
+        }
+
+        return events.stream()
+                .skip(from)
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -162,17 +204,22 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto updateEventByCreator(Long userId, NewEventDto newEventDto) {
 
+        Event event = eventRepository.findById(newEventDto.getEventId())
+                .orElseThrow(() -> new NotFoundException("Not found event with id = " + newEventDto.getEventId()));
+
         if (LocalDateTime.now().plusHours(2).isAfter(newEventDto.getEventDate())) {
             throw new ValidationException(String.format("wrong time %s", newEventDto.getEventDate().toString()));
         }
-        Event event = EventMapper.toEvent(userId, newEventDto);
+/*        //Event event = EventMapper.toEvent(userId, newEventDto);
+        Event event = eventRepository.findById(newEventDto.getEventId())
+                .orElseThrow(() -> new NotFoundException("There is no Event =(( "));*/
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Only initiator or admin can edit event");
         }
         if (event.getState().equals(EventState.PUBLISHED)) {
             throw new ValidationException("We can't edit a published event");
         }
-        if(event.getState().equals(EventState.CANCELED)) {
+        if (event.getState().equals(EventState.CANCELED)) {
             event.setState(EventState.PENDING);
         }
 
@@ -212,7 +259,7 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException("Only initiator can get this information");
         }
 
-        return event.getRequests()
+        return eventRequestRepository.findAllByEventId(eventId)
                 .stream()
                 .map(EventRequestMapper::toEventRequestDto)
                 .collect(Collectors.toList());
@@ -236,7 +283,7 @@ public class EventServiceImpl implements EventService {
         }
         currentEventRequest.setStatus(RequestState.CONFIRMED);
         if (isRequestLimitReached(event)) {
-            event.getRequests().removeIf(e-> !e.getStatus().equals(RequestState.CONFIRMED));
+            event.getRequests().removeIf(e -> !e.getStatus().equals(RequestState.CONFIRMED));
         }
         eventRepository.save(event);
 
@@ -266,13 +313,12 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     *
      * @param event
      * @return
      */
     private boolean isRequestLimitReached(Event event) {
 
-        long limitConfirmed = event.getRequests().stream().filter(e-> e.getStatus().equals(RequestState.CONFIRMED)).count();
+        long limitConfirmed = event.getRequests().stream().filter(e -> e.getStatus().equals(RequestState.CONFIRMED)).count();
         return limitConfirmed >= event.getParticipantLimit();
     }
 }
