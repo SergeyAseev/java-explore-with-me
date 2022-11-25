@@ -35,8 +35,8 @@ public class EventPrivateController {
     }
 
     @PatchMapping
-    public EventFullDto updateEventByCreator(@PathVariable Long userId,
-                                             @RequestBody @Valid NewEventDto eventFullDto) {
+    public EventFullDto updateEventByCreator(@PathVariable @NotNull Long userId,
+                                             @RequestBody NewEventDto eventFullDto) {
         log.info("Update event {} by creator with ID = {}", eventFullDto, userId);
         return eventService.updateEventByCreator(userId, eventFullDto);
     }

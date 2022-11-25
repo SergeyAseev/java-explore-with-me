@@ -53,7 +53,7 @@ public class EventPublicController {
     public EventFullDto retrievePublicEventById(@PathVariable Long id, HttpServletRequest request) {
 
         log.info("Retrieve event with ID = {}", id);
-        statsClient.save(request); //TODO ломает тест на получение события
+        statsClient.save(request);
         return eventService.retrievePublicEventById(id);
     }
 }

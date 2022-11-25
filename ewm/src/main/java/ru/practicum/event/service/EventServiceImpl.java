@@ -210,9 +210,6 @@ public class EventServiceImpl implements EventService {
         if (LocalDateTime.now().plusHours(2).isAfter(newEventDto.getEventDate())) {
             throw new ValidationException(String.format("wrong time %s", newEventDto.getEventDate().toString()));
         }
-/*        //Event event = EventMapper.toEvent(userId, newEventDto);
-        Event event = eventRepository.findById(newEventDto.getEventId())
-                .orElseThrow(() -> new NotFoundException("There is no Event =(( "));*/
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Only initiator or admin can edit event");
         }
