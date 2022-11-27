@@ -1,6 +1,7 @@
-package ru.practicum.Compilation.dto;
+package ru.practicum.compilation.dto;
 
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
@@ -8,8 +9,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Jacksonized
 public class NewCompilationDto {
 
     private Boolean pinned;

@@ -1,16 +1,16 @@
-package ru.practicum.Compilation.controller;
+package ru.practicum.compilation.controller;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.Compilation.dto.CompilationDto;
-import ru.practicum.Compilation.dto.NewCompilationDto;
-import ru.practicum.Compilation.service.CompilationService;
+import ru.practicum.compilation.dto.CompilationDto;
+import ru.practicum.compilation.dto.NewCompilationDto;
+import ru.practicum.compilation.service.CompilationService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Slf4j
 @Validated
@@ -30,37 +30,37 @@ public class CompilationAdminController {
     }
 
     @DeleteMapping("/{compId}")
-    void removeCompilationById(@PathVariable @NonNull Integer compId) {
+    void removeCompilationById(@PathVariable @NotNull Integer compId) {
 
         log.info("Remove compilation with ID = {}", compId);
         compilationService.removeCompilationById(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
-    void removeEventFromCompilation(@PathVariable @NonNull Integer compId,
-                                    @PathVariable @NonNull Long eventId) {
+    void removeEventFromCompilation(@PathVariable @NotNull Integer compId,
+                                    @PathVariable @NotNull Long eventId) {
 
         log.info("Remove event with ID = {} from compilation with ID = {}", eventId, compId);
         compilationService.removeEventFromCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
-    public CompilationDto addEventInCompilation(@PathVariable @NonNull Integer compId,
-                                                @PathVariable @NonNull Long eventId) {
+    public CompilationDto addEventInCompilation(@PathVariable @NotNull Integer compId,
+                                                @PathVariable @NotNull Long eventId) {
 
         log.info("Add event with ID = {} in compilation with ID = {}", eventId, compId);
         return compilationService.addEventInCompilation(compId, eventId);
     }
 
     @DeleteMapping("/{compId}/pin")
-    void pinnedOutCompilation(@PathVariable @NonNull Integer compId) {
+    void pinnedOutCompilation(@PathVariable @NotNull Integer compId) {
 
         log.info("Pinned out Compilation with ID = {}", compId);
         compilationService.pinnedOutCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
-    public CompilationDto pinnedCompilation(@PathVariable @NonNull Integer compId) {
+    public CompilationDto pinnedCompilation(@PathVariable @NotNull Integer compId) {
 
         log.info("Pinned Compilation with ID = {}", compId);
         return compilationService.pinnedCompilation(compId);

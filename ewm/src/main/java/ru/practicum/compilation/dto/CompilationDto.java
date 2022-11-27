@@ -1,8 +1,11 @@
-package ru.practicum.Compilation.dto;
+package ru.practicum.compilation.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,8 +14,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Jacksonized
 public class CompilationDto {
 
     private Integer id;
@@ -24,8 +26,7 @@ public class CompilationDto {
     @Getter
     @Setter
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class EventShortDto {
 
         private String annotation;
@@ -37,13 +38,11 @@ public class CompilationDto {
         private UserShortDto initiator;
         private Boolean paid;
         private String title;
-        //private Long views;
 
         @Getter
         @Setter
         @Builder
-        @NoArgsConstructor
-        @AllArgsConstructor
+        @Jacksonized
         public static class UserShortDto {
             private Long id;
             private String name;
@@ -52,8 +51,7 @@ public class CompilationDto {
         @Getter
         @Setter
         @Builder
-        @NoArgsConstructor
-        @AllArgsConstructor
+        @Jacksonized
         public static class CategoryDto {
             private Integer id;
             private String name;

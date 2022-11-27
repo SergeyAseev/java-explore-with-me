@@ -8,32 +8,42 @@ public interface CategoryService {
 
 
     /**
-     * @param categoryDto
-     * @return
+     * Добавление новой категории
+     *
+     * @param categoryDto экземпляр сущности для создания
+     * @return дто-экземпляр новой категории
      */
     CategoryDto createCategory(CategoryDto categoryDto);
 
     /**
-     * @param categoryDto
-     * @return
+     * Изменение категории
+     *
+     * @param categoryDto экземпляр сущности для изменения
+     * @return дто-экземпляр измененной категории
      */
     CategoryDto updateCategory(CategoryDto categoryDto);
 
     /**
-     * @param catId
+     * Удаление категории
+     *
+     * @param catId ID удаляемой категории
      */
     void removeCategory(Integer catId);
 
     /**
-     * @param catId
-     * @return
+     * Получение информации о категории по ее ID
+     *
+     * @param catId ID запрашиваемой категории
+     * @return дто-экземпляр категории
      */
     CategoryDto retrieveCategoryById(Integer catId);
 
     /**
-     * @param from
-     * @param size
-     * @return
+     * Получение категорий
+     *
+     * @param from кол-во категорий, которые нужно пропустить для формирования текущего набора
+     * @param size кол-во категорий в наборе
+     * @return Список дто-экземпляров категорий
      */
     List<CategoryDto> retrieveAllCategories(int from, int size);
 }

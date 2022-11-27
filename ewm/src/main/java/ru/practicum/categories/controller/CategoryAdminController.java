@@ -1,6 +1,5 @@
 package ru.practicum.categories.controller;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import ru.practicum.categories.dto.CategoryDto;
 import ru.practicum.categories.service.CategoryService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Slf4j
 @Validated
@@ -34,7 +34,7 @@ public class CategoryAdminController {
     }
 
     @DeleteMapping(value = "/{catId}")
-    public void removeCategory(@PathVariable @NonNull Integer catId) {
+    public void removeCategory(@PathVariable @NotNull Integer catId) {
         log.info("Remove category with ID = {}", catId);
         categoryService.removeCategory(catId);
     }

@@ -27,8 +27,10 @@ public class CategoryPublicController {
     }
 
     @GetMapping
-    public List<CategoryDto> retrieveAllCategories(@PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                   @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<CategoryDto> retrieveAllCategories(@PositiveOrZero @RequestParam(name = "from", defaultValue = "0")
+                                                   Integer from,
+                                                   @Positive @RequestParam(name = "size", defaultValue = "10")
+                                                   Integer size) {
         log.info("Get all categories");
         return categoryService.retrieveAllCategories(from, size);
     }

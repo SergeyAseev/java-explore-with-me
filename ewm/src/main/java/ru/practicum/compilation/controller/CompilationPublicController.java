@@ -1,11 +1,11 @@
-package ru.practicum.Compilation.controller;
+package ru.practicum.compilation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.Compilation.dto.CompilationDto;
-import ru.practicum.Compilation.service.CompilationService;
+import ru.practicum.compilation.dto.CompilationDto;
+import ru.practicum.compilation.service.CompilationService;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -33,6 +33,6 @@ public class CompilationPublicController {
     public CompilationDto retrieveCompilationById(@PathVariable Integer compId) {
 
         log.info("Retrieve compilation by ID = {}", compId);
-        return compilationService.retrieveCompilationById(compId);
+        return compilationService.retrieveDtoCompilationById(compId);
     }
 }

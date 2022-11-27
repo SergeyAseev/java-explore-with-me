@@ -1,4 +1,4 @@
-package ru.practicum.Compilation.model;
+package ru.practicum.compilation.model;
 
 import lombok.*;
 import ru.practicum.event.model.Event;
@@ -20,15 +20,15 @@ public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer id; // ID подборки
 
     @NotNull
     @Column(name = "pinned")
-    private Boolean pinned;
+    private Boolean pinned; // флаг закрепленности подборки
 
     @NotBlank
     @Column(name = "title")
-    private String title;
+    private String title; // заголовок подборки
 
     @ManyToMany
     @JoinTable(name = "compilation_event_link",

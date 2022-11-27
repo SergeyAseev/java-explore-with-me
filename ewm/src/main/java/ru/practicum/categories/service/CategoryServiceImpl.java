@@ -26,9 +26,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
 
-        if (categoryRepository.findByName(categoryDto.getName()) != null) {
-            throw new ExistsElementException("Category already exist");
-        }
+        verifyCategoryByName(categoryDto.getName());
+
         Category category = CategoryMapper.toCategory(categoryDto);
         return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
@@ -36,22 +35,17 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto) {
 
-        getCategoryById(categoryDto.getId());
-
-        if (categoryRepository.findByName(categoryDto.getName()) != null) {
-            throw new ExistsElementException("Category with this name already exist");
-        }
+        retrieveCategoryById(categoryDto.getId());
+        verifyCategoryByName(categoryDto.getName());
 
         Category oldCategory = CategoryMapper.toCategory(categoryDto);
         oldCategory.setName(categoryDto.getName());
-        categoryRepository.save(oldCategory);
-        return CategoryMapper.toCategoryDto(oldCategory);
+        return CategoryMapper.toCategoryDto(categoryRepository.save(oldCategory));
     }
 
     @Override
     public void removeCategory(Integer catId) {
 
-        getCategoryById(catId);
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %s not found", catId)));
         if (!category.getEvents().isEmpty()) {
@@ -59,11 +53,6 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             categoryRepository.deleteById(catId);
         }
-    }
-
-    @Override
-    public CategoryDto retrieveCategoryById(Integer catId) {
-        return getCategoryById(catId);
     }
 
     @Override
@@ -76,10 +65,16 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-    private CategoryDto getCategoryById(Integer catId) {
+    public CategoryDto retrieveCategoryById(Integer catId) {
 
         Category category = categoryRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with ID %s not found", catId)));
         return CategoryMapper.toCategoryDto(category);
+    }
+
+    private void verifyCategoryByName(String catName) {
+        if (categoryRepository.findByName(catName) != null) {
+            throw new ExistsElementException("Category with this name already exist");
+        }
     }
 }

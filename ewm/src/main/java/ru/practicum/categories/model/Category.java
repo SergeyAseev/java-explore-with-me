@@ -19,12 +19,12 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Integer id; // ID категории
 
     @NotBlank
     @Column(name = "name")
-    private String name;
+    private String name; // название категории
 
     @OneToMany(mappedBy = "category")
-    private Set<Event> events;
+    private Set<Event> events; //список событий данной категории
 }

@@ -14,6 +14,7 @@ import ru.practicum.user.dto.UserMapper;
 import ru.practicum.user.model.User;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,21 +31,23 @@ public class UserServiceImpl implements UserService {
             throw new ExistsElementException("User with this name already exist");
         }
         User user = UserMapper.toUser(userDto);
-        if (user.getEmail() != null) {
+        String email = user.getEmail();
+        if (!Objects.isNull(email)) {
             try {
-                log.info("User with email {} was created", user.getEmail());
+                log.info("User with email {} was created", email);
                 User createdUser = userRepository.save(user);
                 return UserMapper.toUserDto(createdUser);
             } catch (RuntimeException e) {
-                log.warn("User with email {} exists", user.getEmail());
+                log.warn("User with email {} exists", email);
                 throw new ExistsElementException("User exists");
             }
         } else {
-            throw new ValidationException("Email not found");
+            throw new ValidationException(String.format("Email %s not found", email));
         }
     }
 
     public List<UserDto> retrieveUsers(List<Long> userIds, Integer from, Integer size) {
+
         Pageable pageable = PageRequest.of(from / size, size);
 
         if (userIds.isEmpty()) {
@@ -61,11 +64,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public void deleteUser(Long userId) {
+
         getUserById(userId);
         userRepository.deleteById(userId);
     }
 
     public UserDto getUserById(Long userId) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %s not found", userId)));
         return UserMapper.toUserDto(user);

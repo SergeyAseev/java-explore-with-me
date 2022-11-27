@@ -1,6 +1,6 @@
-package ru.practicum.Compilation.dto;
+package ru.practicum.compilation.dto;
 
-import ru.practicum.Compilation.model.Compilation;
+import ru.practicum.compilation.model.Compilation;
 import ru.practicum.event.model.Event;
 
 import java.util.stream.Collectors;
@@ -27,7 +27,6 @@ public class CompilationMapper {
                         .id(event.getCategory().getId())
                         .name(event.getCategory().getName())
                         .build())
-                //.confirmedRequests(event.getRequests().size())
                 .eventDate(event.getEventDate())
                 .initiator(CompilationDto.EventShortDto.UserShortDto.builder()
                         .id(event.getInitiator().getId())
@@ -35,7 +34,6 @@ public class CompilationMapper {
                         .build())
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                //.views(event.getViews())
                 .build();
     }
 
