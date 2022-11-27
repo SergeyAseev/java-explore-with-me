@@ -18,8 +18,6 @@ public class ErrorHandler extends RuntimeException {
     public ResponseEntity<Map<String, String>> handleValidateException(
             final ValidationException e) {
         log.info(e.getMessage());
-        //String errors = Collections.singletonList(e.printStackTrace());
-
         StringWriter errors = new StringWriter();
         PrintWriter pw = new PrintWriter(errors);
         e.printStackTrace(pw);
@@ -50,14 +48,4 @@ public class ErrorHandler extends RuntimeException {
         return new ResponseEntity<>(Map.of("error",
                 e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-/*    @ExceptionHandler
-    public ResponseEntity<?> validationException(ValidationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<?> notFoundException(NotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }*/
 }

@@ -26,7 +26,7 @@ public class StatsController {
     @PostMapping("/hit")
     public EndPointStatsClientDto save(@Valid @RequestBody EndPointStatsClientDto endPointStatsClientDto) {
 
-        log.info("");//TODO
+        log.info("add event in statistic");
         return statsService.save(endPointStatsClientDto);
     }
 
@@ -38,7 +38,7 @@ public class StatsController {
             @RequestParam(required = false, defaultValue = "false")
             Boolean unique) {
 
-        log.info("");//TODO
+        log.info("retrieve views");
         return statsService.getViewStats(start, end, uris, unique);
     }
 }

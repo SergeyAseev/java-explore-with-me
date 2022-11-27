@@ -2,6 +2,7 @@ package ru.practicum.eventRequest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 import ru.practicum.eventRequest.model.RequestState;
 
 import java.time.LocalDateTime;
@@ -9,8 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
+@Jacksonized
 public class EventRequestDto {
 
     private Long id;

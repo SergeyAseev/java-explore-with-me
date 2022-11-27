@@ -36,9 +36,8 @@ public class EventRequestImpl implements EventRequestService {
 
     @Override
     public List<EventRequestDto> getRequests(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with ID %s not found", userId)));
 
+        User user = getUser(userId);
         List<EventRequest> eventRequests = eventRequestRepository.findAllByUser(user);
 
         return eventRequests.stream()
@@ -49,10 +48,9 @@ public class EventRequestImpl implements EventRequestService {
     @Override
     public EventRequestDto addRequest(Long userId, Long eventId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with ID %s not found", userId)));
+        User user = getUser(userId);
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
-                new NotFoundException(String.format("Event with ID %s not found", eventId)));
+                new NotFoundException(String.format("Event with ID %s wasn't found", eventId)));
 
         EventRequest eventRequest = EventRequest.builder()
                 .event(event)
@@ -70,24 +68,24 @@ public class EventRequestImpl implements EventRequestService {
         }
         if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
             eventRequest.setStatus(RequestState.CONFIRMED);
-            //TODO increase particLimit
         }
 
-        eventRequestRepository.save(eventRequest);
-
-        return EventRequestMapper.toEventRequestDto(eventRequest);
+        return EventRequestMapper.toEventRequestDto(eventRequestRepository.save(eventRequest));
     }
 
     @Override
     public EventRequestDto cancelRequest(Long userId, Long requestId) {
 
         EventRequest eventRequest = eventRequestRepository.findById(requestId)
-                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s not found", requestId)));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("User with ID %s not found", userId)));
+                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s wasn't found", requestId)));
+        getUser(userId);
 
         eventRequest.setStatus(RequestState.CANCELED);
-        //TODO decriase particLimit
         return EventRequestMapper.toEventRequestDto(eventRequestRepository.save(eventRequest));
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with ID %s wasn't found", userId)));
     }
 }

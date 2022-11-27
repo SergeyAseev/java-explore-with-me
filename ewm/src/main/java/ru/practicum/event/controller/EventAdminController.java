@@ -1,6 +1,5 @@
 package ru.practicum.event.controller;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.service.EventService;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -41,20 +41,20 @@ public class EventAdminController {
     }
 
     @PutMapping("{eventId}")
-    public EventFullDto updateEvent(@PathVariable @NonNull Long eventId,
+    public EventFullDto updateEvent(@PathVariable @NotNull Long eventId,
                                     @RequestBody NewEventDto newEventDto) {
         log.info("Update event = {}", newEventDto);
         return eventService.updateEvent(newEventDto, eventId);
     }
 
     @PatchMapping("/{eventId}/publish")
-    public EventFullDto publishEvent(@PathVariable @NonNull Long eventId) {
+    public EventFullDto publishEvent(@PathVariable @NotNull Long eventId) {
         log.info("Publish the event with ID = {}", eventId);
         return eventService.publishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
-    public EventFullDto rejectEvent(@PathVariable @NonNull Long eventId) {
+    public EventFullDto rejectEvent(@PathVariable @NotNull Long eventId) {
         log.info("Reject the event with ID = {}", eventId);
         return eventService.rejectEvent(eventId);
     }

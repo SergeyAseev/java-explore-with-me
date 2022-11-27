@@ -2,6 +2,7 @@ package ru.practicum.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 import ru.practicum.event.model.EventState;
 
 import javax.validation.constraints.NotBlank;
@@ -11,8 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Jacksonized
 public class EventFullDto {
 
     @NotBlank
@@ -45,8 +45,7 @@ public class EventFullDto {
     @Getter
     @Setter
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @Jacksonized
     public static class CategoryDto {
         private Integer id;
         private String name;
@@ -55,8 +54,7 @@ public class EventFullDto {
     @Getter
     @Setter
     @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @Jacksonized
     public static class UserShortDto {
         private Long id;
         private String name;
@@ -65,8 +63,7 @@ public class EventFullDto {
     @Getter
     @Setter
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     public static class Location {
         private Double lat;
         private Double lon;

@@ -7,22 +7,28 @@ import java.util.List;
 public interface EventRequestService {
 
     /**
-     * @param userId
-     * @return
+     * Получение информации о заявках текущего пользователя на участие в чужих событиях
+     *
+     * @param userId ID пользователя
+     * @return список дто-экземпляров запросов на участие
      */
     List<EventRequestDto> getRequests(Long userId);
 
     /**
-     * @param userId
-     * @param eventId
-     * @return
+     * Добавление запроса от текущего пользователя на участие в событии
+     *
+     * @param userId  ID пользователя
+     * @param eventId ID события
+     * @return дто-экземпляр запроса на участие
      */
     EventRequestDto addRequest(Long userId, Long eventId);
 
     /**
-     * @param userId
-     * @param requestId
-     * @return
+     * Отмена своего запроса на участие в событии
+     *
+     * @param userId    ID пользователя
+     * @param requestId ID события
+     * @return дто-экземпляр запроса на участие
      */
     EventRequestDto cancelRequest(Long userId, Long requestId);
 }

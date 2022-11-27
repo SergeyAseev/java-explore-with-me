@@ -15,27 +15,35 @@ public interface EventService {
     //admin controller start
 
     /**
-     * @return
+     * Поиск событий
+     *
+     * @return список дто-экземпляров событий
      */
     List<EventFullDto> retrieveEvents(List<Long> userIds, List<EventState> stateIds, List<Integer> catIds,
                                       LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
 
     /**
-     * @param eventFullDto
-     * @param eventId
-     * @return
+     * Редактирование события
+     *
+     * @param eventFullDto дто-экземпляр события
+     * @param eventId      ID события
+     * @return дто-экземпляр отредактированного события
      */
     EventFullDto updateEvent(NewEventDto eventFullDto, Long eventId);
 
     /**
-     * @param eventId
+     * Публикация события
+     *
+     * @param eventId ID события
      * @return
      */
     EventFullDto publishEvent(Long eventId);
 
     /**
-     * @param eventId
-     * @return
+     * Отклонение события
+     *
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     EventFullDto rejectEvent(Long eventId);
     //admin controller end
@@ -43,15 +51,19 @@ public interface EventService {
     //public controller start
 
     /**
-     * @return
+     * Получение событий с возможностью фильтрации
+     *
+     * @return список дто-экземпляров событий
      */
     List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, LocalDateTime rangeStart,
                                              LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size);
 
 
     /**
-     * @param eventId
-     * @return
+     * Получение подробной информации об опубликованном событии по его ID
+     *
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     EventFullDto retrievePublicEventById(Long eventId);
     //public controller end
@@ -59,59 +71,75 @@ public interface EventService {
     //private controller start
 
     /**
-     * @param userId
-     * @param from
-     * @param size
-     * @return
+     * Получение событий,добавленных текущим пользователем
+     *
+     * @param userId ID пользователя
+     * @param from   количество элементов, которые нужно пропустить для формирования текущего набора
+     * @param size   количество элементов в наборе
+     * @return список дто-экземпляров событий
      */
     List<EventFullDto> retrieveEventsByCreator(Long userId, Integer from, Integer size);
 
     /**
-     * @param userId
-     * @param eventFullDto
-     * @return
+     * Изменения события добавленного текущим пользователем
+     *
+     * @param userId       ID пользователя
+     * @param eventFullDto дто-экземпляр события
+     * @return дто-экземпляр события
      */
     EventFullDto updateEventByCreator(Long userId, NewEventDto eventFullDto);
 
     /**
-     * @param userId
-     * @param eventFullDto
-     * @return
+     * Добавление нового события
+     *
+     * @param userId       ID пользователя
+     * @param eventFullDto дто-экземпляр события
+     * @return дто-экземпляр события
      */
     EventFullDto createEvent(Long userId, NewEventDto eventFullDto);
 
     /**
-     * @param userId
-     * @param eventId
-     * @return
+     * Получение полной информации о событии добавленном текущим пользователем
+     *
+     * @param userId  ID пользователя
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     EventFullDto retrieveEventByIdForCreator(Long userId, Long eventId);
 
     /**
-     * @param userId
-     * @param eventId
-     * @return
+     * Отмена события добавленного текущим пользователем
+     *
+     * @param userId  ID пользователя
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     EventFullDto cancelEventByCreator(Long userId, Long eventId);
 
     /**
-     * @param userId
-     * @param eventId
-     * @return
+     * Получение информации о запросах на участие в событии текущего пользователя
+     *
+     * @param userId  ID пользователя
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     List<EventRequestDto> retrieveRequestEventByUser(Long userId, Long eventId);
 
     /**
-     * @param userId
-     * @param eventId
-     * @return
+     * Подтверждение чужой завяки на участие в событии текущего пользователя
+     *
+     * @param userId  ID пользователя
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     EventRequestDto confirmRequestForEvent(Long userId, Long eventId, Long reqId);
 
     /**
-     * @param userId
-     * @param eventId
-     * @return
+     * Отклоненик чужой завяки на участие в событии текущего пользователя
+     *
+     * @param userId  ID пользователя
+     * @param eventId ID события
+     * @return дто-экземпляр события
      */
     EventRequestDto rejectRequestForEvent(Long userId, Long eventId, Long reqId);
 

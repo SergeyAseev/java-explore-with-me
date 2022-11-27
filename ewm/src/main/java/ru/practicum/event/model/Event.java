@@ -23,69 +23,56 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Long id; // ID события
 
     @Column(name = "title")
-/*    @Max(120)
-    @Min(3)*/
-    private String title;
+    private String title; // заголовок события
 
     @Column(name = "annotation")
-/*    @Max(2000)
-    @Min(20)*/
-    private String annotation;
+    private String annotation; // аннотация события
 
     @Column(name = "description")
-/*    @Max(7000)
-    @Min(20)*/
-    private String description;
+    private String description; // описание события
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private Category category;
+    private Category category; // категория события
 
     @Column(name = "event_date")
-    private LocalDateTime eventDate;
+    private LocalDateTime eventDate; //дата события
 
     @Column(name = "paid")
-    private Boolean paid;
+    private Boolean paid; // платное или нет
 
     @Column(name = "request_moderation")
-    private Boolean requestModeration = true;
+    private Boolean requestModeration = true; // требуется ли модерация
 
     @Column(name = "participant_limit")
-    private Integer participantLimit;
+    private Integer participantLimit; // максимальное число участников
 
     @ManyToOne
     @JoinColumn(name = "initiator_id")
-    private User initiator;
+    private User initiator; // инициатор события
 
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    private LocalDateTime createdOn; // дата создания события
 
     @Column(name = "published_on")
-    private LocalDateTime publishedOn;
+    private LocalDateTime publishedOn; // дата публикации события
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_state")
-    private EventState state;
+    private EventState state; // статус события
 
     @Embedded
-    private Location location;
+    private Location location; // локация события
 
     @OneToMany(mappedBy = "event",
             cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
     @JsonIgnore
-    Set<EventRequest> requests = new HashSet<>();
+    Set<EventRequest> requests = new HashSet<>(); // заявки на участие в событии
 
-    private Integer confirmedRequests;
+    private Integer confirmedRequests; // число потвержденных заявок
 
-    public void incrementConfirmedRequests() {
-        confirmedRequests++;
-    }
-
-    public void decrementConfirmedRequests() {
-        confirmedRequests--;
-    }
 }

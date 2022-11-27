@@ -46,13 +46,14 @@ public class EventServiceImpl implements EventService {
                                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
 
         Pageable pageable = PageRequest.of(from / size, size);
-        if (rangeStart == null) rangeStart = LocalDateTime.now();
-        return eventRepository.searchEvents(userIds, stateIds, catIds,
-                        rangeStart, rangeEnd, pageable)
+        if (rangeStart == null) {
+            rangeStart = LocalDateTime.now();
+        }
+
+        return eventRepository.searchEvents(userIds, stateIds, catIds, rangeStart, rangeEnd, pageable)
                 .stream()
                 .map(EventMapper::toEventFullDto)
                 .collect(Collectors.toList());
-
     }
 
     @Override
@@ -75,35 +76,6 @@ public class EventServiceImpl implements EventService {
         }
 
         return EventMapper.toEventFullDto(eventRepository.save(event));
-    }
-
-    /**
-     * @param newEventDto
-     * @param event
-     */
-    private void checkChanges(NewEventDto newEventDto, Event event) {
-
-        if (newEventDto.getAnnotation() != null) {
-            event.setAnnotation(newEventDto.getAnnotation());
-        }
-        if (newEventDto.getCategory() != null) {
-            event.setCategory(Category.builder().id(newEventDto.getCategory()).build());
-        }
-        if (newEventDto.getDescription() != null) {
-            event.setDescription(newEventDto.getDescription());
-        }
-        if (newEventDto.getEventDate() != null) {
-            event.setEventDate(newEventDto.getEventDate());
-        }
-        if (newEventDto.getPaid() != null) {
-            event.setPaid(newEventDto.getPaid());
-        }
-        if (newEventDto.getParticipantLimit() != null) {
-            event.setParticipantLimit(newEventDto.getParticipantLimit());
-        }
-        if (newEventDto.getTitle() != null) {
-            event.setTitle(newEventDto.getTitle());
-        }
     }
 
     @Override
@@ -156,7 +128,6 @@ public class EventServiceImpl implements EventService {
 
         if (onlyAvailable) {
             events = events.stream()
-                    //.filter(e -> e.getConfirmedRequests() < e.getParticipantLimit() || e.getParticipantLimit() == 0)
                     .filter(e -> isRequestLimitReached(getEventById(e.getId())))
                     .collect(Collectors.toList());
         }
@@ -186,6 +157,7 @@ public class EventServiceImpl implements EventService {
 
         getEventById(eventId);
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED);
+
         return EventMapper.toEventFullDto(event);
     }
 
@@ -195,6 +167,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(
                 from / size,
                 size);
+
         return eventRepository.findAllByInitiatorId(userId, pageable)
                 .stream()
                 .map(EventMapper::toEventFullDto)
@@ -230,12 +203,12 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException(String.format("wrong time %s", newEventDto.getEventDate().toString()));
         }
         Event event = EventMapper.toEvent(userId, newEventDto);
+
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
     public EventFullDto retrieveEventByIdForCreator(Long userId, Long eventId) {
-
         return EventMapper.toEventFullDto(eventRepository.findByIdAndInitiatorId(eventId, userId));
     }
 
@@ -245,6 +218,7 @@ public class EventServiceImpl implements EventService {
         getEventById(eventId);
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         event.setState(EventState.CANCELED);
+
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -267,7 +241,7 @@ public class EventServiceImpl implements EventService {
 
         Event event = getEventById(eventId);
         EventRequest currentEventRequest = eventRequestRepository.findById(reqId)
-                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s not found", reqId)));
+                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s wasn't found", reqId)));
 
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Only initiator can confirm a request");
@@ -292,7 +266,7 @@ public class EventServiceImpl implements EventService {
 
         Event event = getEventById(eventId);
         EventRequest currentEventRequest = eventRequestRepository.findById(reqId)
-                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s not found", reqId)));
+                .orElseThrow(() -> new NotFoundException(String.format("EventRequest with ID = %s wasn't found", reqId)));
         if (!event.getInitiator().getId().equals(userId)) {
             throw new ValidationException("Only initiator can reject a request");
         }
@@ -306,16 +280,49 @@ public class EventServiceImpl implements EventService {
 
     public Event getEventById(Long eventId) {
         return eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(String.format("Event with ID = %s not found", eventId)));
+                .orElseThrow(() -> new NotFoundException(String.format("Event with ID = %s wasn't found", eventId)));
     }
 
     /**
-     * @param event
-     * @return
+     * проверяем, достигнут ли предел участников
+     *
+     * @param event экземпляр события
+     * @return true|false
      */
     private boolean isRequestLimitReached(Event event) {
 
         long limitConfirmed = event.getRequests().stream().filter(e -> e.getStatus().equals(RequestState.CONFIRMED)).count();
         return limitConfirmed >= event.getParticipantLimit();
+    }
+
+    /**
+     * Проверяем событие
+     *
+     * @param newEventDto экземпляр нового события
+     * @param event       редактируемое событие
+     */
+    private void checkChanges(NewEventDto newEventDto, Event event) {
+
+        if (newEventDto.getAnnotation() != null) {
+            event.setAnnotation(newEventDto.getAnnotation());
+        }
+        if (newEventDto.getCategory() != null) {
+            event.setCategory(Category.builder().id(newEventDto.getCategory()).build());
+        }
+        if (newEventDto.getDescription() != null) {
+            event.setDescription(newEventDto.getDescription());
+        }
+        if (newEventDto.getEventDate() != null) {
+            event.setEventDate(newEventDto.getEventDate());
+        }
+        if (newEventDto.getPaid() != null) {
+            event.setPaid(newEventDto.getPaid());
+        }
+        if (newEventDto.getParticipantLimit() != null) {
+            event.setParticipantLimit(newEventDto.getParticipantLimit());
+        }
+        if (newEventDto.getTitle() != null) {
+            event.setTitle(newEventDto.getTitle());
+        }
     }
 }
