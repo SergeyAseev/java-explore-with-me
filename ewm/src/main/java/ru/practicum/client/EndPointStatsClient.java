@@ -1,8 +1,6 @@
 package ru.practicum.client;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -10,6 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class EndPointStatsClient {
 
@@ -22,10 +22,4 @@ public class EndPointStatsClient {
     private String ip;
     @NotNull
     private LocalDateTime timestamp;
-
-    public EndPointStatsClient(String app, String uri, String ip) {
-        this.app = app;
-        this.uri = uri;
-        this.ip = ip;
-    }
 }

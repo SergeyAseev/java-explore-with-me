@@ -24,7 +24,6 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -113,24 +112,15 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> retrievePublicEvents(String text, List<Integer> catIds, Boolean paid, LocalDateTime rangeStart,
                                                     LocalDateTime rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size) {
 
-        if (text.isBlank()) {
-            return new ArrayList<>();
-        }
         if (Objects.isNull(rangeStart)) {
             rangeStart = LocalDateTime.now();
         }
 
-        List<EventShortDto> events = eventRepository.findEvents(text, catIds, paid, rangeStart, rangeEnd)
+        List<EventShortDto> events = eventRepository.findEvents(text, catIds, paid, rangeStart, rangeEnd, onlyAvailable)
                 .stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
 
-
-        if (onlyAvailable) {
-            events = events.stream()
-                    .filter(e -> isRequestLimitReached(getEventById(e.getId())))
-                    .collect(Collectors.toList());
-        }
         if (sort != null) {
             switch (sort) {
                 case EVENT_DATE:
@@ -155,8 +145,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto retrievePublicEventById(Long eventId) {
 
-        getEventById(eventId);
-        Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED);
+        Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
+                .orElseThrow(() -> new NotFoundException(String.format("Event with ID = %s wasn't found", eventId)));
 
         return EventMapper.toEventFullDto(event);
     }
@@ -254,7 +244,9 @@ public class EventServiceImpl implements EventService {
         }
         currentEventRequest.setStatus(RequestState.CONFIRMED);
         if (isRequestLimitReached(event)) {
-            event.getRequests().removeIf(e -> !e.getStatus().equals(RequestState.CONFIRMED));
+            event.getRequests().stream()
+                    .filter(e -> !e.getStatus().equals(RequestState.CONFIRMED))
+                    .forEach(eventRequest -> eventRequest.setStatus(RequestState.CANCELED));
         }
         eventRepository.save(event);
 

@@ -21,5 +21,5 @@ public interface StatsService {
      * @param unique
      * @return
      */
-    List<ViewStats> getViewStats(LocalDateTime startDate, LocalDateTime endDate, List<String> uriIds, Boolean unique);
+    List<ViewStats> getViewStats(String startDate, String endDate, List<String> uriIds, Boolean unique);
 }

@@ -10,5 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByIdIn(List<Long> userIds, Pageable pageable);
 
-    User findByName(String name);
+    Integer countByName(String name);
 }

@@ -30,14 +30,14 @@ public class CompilationAdminController {
     }
 
     @DeleteMapping("/{compId}")
-    void removeCompilationById(@PathVariable @NotNull Integer compId) {
+    public void removeCompilationById(@PathVariable @NotNull Integer compId) {
 
         log.info("Remove compilation with ID = {}", compId);
         compilationService.removeCompilationById(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
-    void removeEventFromCompilation(@PathVariable @NotNull Integer compId,
+    public void removeEventFromCompilation(@PathVariable @NotNull Integer compId,
                                     @PathVariable @NotNull Long eventId) {
 
         log.info("Remove event with ID = {} from compilation with ID = {}", eventId, compId);
@@ -53,10 +53,10 @@ public class CompilationAdminController {
     }
 
     @DeleteMapping("/{compId}/pin")
-    void pinnedOutCompilation(@PathVariable @NotNull Integer compId) {
+    public CompilationDto pinnedOutCompilation(@PathVariable @NotNull Integer compId) {
 
         log.info("Pinned out Compilation with ID = {}", compId);
-        compilationService.pinnedOutCompilation(compId);
+        return compilationService.pinnedOutCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")

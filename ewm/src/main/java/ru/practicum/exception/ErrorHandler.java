@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
-public class ErrorHandler extends RuntimeException {
+public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<Map<String, String>> handleValidateException(

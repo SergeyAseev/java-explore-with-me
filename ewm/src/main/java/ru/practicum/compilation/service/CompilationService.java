@@ -61,8 +61,9 @@ public interface CompilationService {
      * Открепить подборки на главной странице
      *
      * @param compId ID подборки
+     * @return дто-экземпляр открепленной подборки
      */
-    void pinnedOutCompilation(Integer compId);
+    CompilationDto pinnedOutCompilation(Integer compId);
 
     /**
      * Закрепить полборку на главной странице

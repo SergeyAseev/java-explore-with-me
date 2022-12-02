@@ -22,6 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring-boot-starter-data-jpa.version>2.7.5</spring-boot-starter-data-jpa.version>
 		<spring-boot-starter-webflux.version>2.7.5</spring-boot-starter-webflux.version>
+		<spring-boot-autoconfigure>2.7.1</spring-boot-autoconfigure>
+		<jakarta.validation-api>2.0.2</jakarta.validation-api>
 	</properties>
 
 	<modules>

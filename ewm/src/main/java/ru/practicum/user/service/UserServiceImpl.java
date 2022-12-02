@@ -27,22 +27,18 @@ public class UserServiceImpl implements UserService {
 
     public UserDto createUser(UserDto userDto) {
 
-        if (userRepository.findByName(userDto.getName()) != null) {
+        if (userRepository.countByName(userDto.getName()) != 0) {
             throw new ExistsElementException("User with this name already exist");
         }
         User user = UserMapper.toUser(userDto);
         String email = user.getEmail();
-        if (!Objects.isNull(email)) {
-            try {
-                log.info("User with email {} was created", email);
-                User createdUser = userRepository.save(user);
-                return UserMapper.toUserDto(createdUser);
-            } catch (RuntimeException e) {
-                log.warn("User with email {} exists", email);
-                throw new ExistsElementException("User exists");
-            }
-        } else {
-            throw new ValidationException(String.format("Email %s not found", email));
+        try {
+            log.info("User with email {} was created", email);
+            User createdUser = userRepository.save(user);
+            return UserMapper.toUserDto(createdUser);
+        } catch (ExistsElementException e) {
+            log.warn("User with email {} exists", email);
+            throw new ExistsElementException("User exists");
         }
     }
 

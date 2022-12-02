@@ -38,9 +38,9 @@ public class CategoryServiceImpl implements CategoryService {
         retrieveCategoryById(categoryDto.getId());
         verifyCategoryByName(categoryDto.getName());
 
-        Category oldCategory = CategoryMapper.toCategory(categoryDto);
-        oldCategory.setName(categoryDto.getName());
-        return CategoryMapper.toCategoryDto(categoryRepository.save(oldCategory));
+        Category category = CategoryMapper.toCategory(categoryDto);
+        category.setName(categoryDto.getName());
+        return CategoryMapper.toCategoryDto(categoryRepository.save(category));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void verifyCategoryByName(String catName) {
-        if (categoryRepository.findByName(catName) != null) {
+        if (categoryRepository.countByName(catName) != 0) {
             throw new ExistsElementException("Category with this name already exist");
         }
     }

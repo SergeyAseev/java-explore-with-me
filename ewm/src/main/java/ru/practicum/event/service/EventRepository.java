@@ -8,6 +8,8 @@ import ru.practicum.event.model.EventState;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
@@ -17,9 +19,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     //находим событие инициатора
     Event findByIdAndInitiatorId(Long eventId, Long userId);
 
+    //вернуть все события в подборки
+    Set<Event> findAllByIdIn(Set<Long> events);
 
     // находим событие по статусу
-    Event findByIdAndState(Long eventId, EventState state);
+    Optional<Event> findByIdAndState(Long eventId, EventState state);
 
     //находим события по параметрам для админа
     @Query("SELECT e FROM Event AS e " +
@@ -37,6 +41,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "lower(e.description) like lower(concat('%', :text, '%')))" +
             "AND ((:catIds) IS NULL OR e.category.id IN :catIds) " +
             "and e.paid = :isPaid " +
-            "and e.eventDate between :rangeStart and :rangeEnd")
-    List<Event> findEvents(String text, List<Integer> catIds, Boolean isPaid, LocalDateTime rangeStart, LocalDateTime rangeEnd);
+            "and e.eventDate between :rangeStart and :rangeEnd " +
+            "and (:onlyAvailable is false or (e.participantLimit = 0 or e.confirmedRequests < e.participantLimit))")
+    List<Event> findEvents(String text, List<Integer> catIds, Boolean isPaid, LocalDateTime rangeStart,
+                           LocalDateTime rangeEnd, Boolean onlyAvailable);
 }

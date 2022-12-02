@@ -71,7 +71,7 @@ public class Event {
             cascade = CascadeType.MERGE,
             fetch = FetchType.LAZY)
     @JsonIgnore
-    Set<EventRequest> requests = new HashSet<>(); // заявки на участие в событии
+    private Set<EventRequest> requests = new HashSet<>(); // заявки на участие в событии
 
     private Integer confirmedRequests; // число потвержденных заявок
 

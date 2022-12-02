@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 public class CompilationImpl implements CompilationService {
 
     @Autowired
-    final CompilationRepository compilationRepository;
+    private final CompilationRepository compilationRepository;
 
     @Autowired
-    final EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public List<CompilationDto> retrieveAllCompilations(Boolean pinned, Integer from, Integer size) {
@@ -46,14 +46,15 @@ public class CompilationImpl implements CompilationService {
     @Override
     public CompilationDto addNewCompilation(NewCompilationDto newCompilationDto) {
 
-        Compilation compilation = CompilationMapper.toCompilation(newCompilationDto);
-        compilationRepository.save(compilation);
+        Set<Event> events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
+        Compilation newCompilation = Compilation.builder()
+                .events(events)
+                .pinned(newCompilationDto.getPinned())
+                .title(newCompilationDto.getTitle())
+                .build();
+        compilationRepository.save(newCompilation);
 
-        compilation.getEvents().stream()
-                .map(e -> addEventInCompilation(compilation.getId(), e.getId()))
-                .collect(Collectors.toList());
-
-        return CompilationMapper.toCompilDto(compilation);
+        return CompilationMapper.toCompilDto(newCompilation);
     }
 
     @Override
@@ -88,11 +89,13 @@ public class CompilationImpl implements CompilationService {
     }
 
     @Override
-    public void pinnedOutCompilation(Integer compId) {
+    public CompilationDto pinnedOutCompilation(Integer compId) {
 
         Compilation compilation = retrieveCompilationById(compId);
         compilation.setPinned(false);
         compilationRepository.save(compilation);
+
+        return CompilationMapper.toCompilDto(compilation);
     }
 
     @Override
@@ -120,7 +123,7 @@ public class CompilationImpl implements CompilationService {
      * @param compId ID подборки
      * @return экземпляр подборки
      */
-    public Compilation retrieveCompilationById(Integer compId) {
+    private Compilation retrieveCompilationById(Integer compId) {
 
         return compilationRepository
                 .findById(compId)

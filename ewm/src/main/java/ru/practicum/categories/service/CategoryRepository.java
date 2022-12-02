@@ -7,4 +7,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     //Ищем категорию по названию
     Category findByName(String name);
+
+    Integer countByName(String name);
 }
