@@ -38,8 +38,7 @@ public class StatsClient extends BaseClient {
 
     public Long getViews(Long eventId) {
 
-        String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Map<String, Object> parameters = Map.of("start", URLEncoder.encode(LocalDateTime
                         .ofEpochSecond(0L, 0, ZoneOffset.UTC)
                         .format(dateTimeFormatter)), "end",
