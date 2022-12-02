@@ -31,8 +31,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStats> getViewStats(String startDate, String endDate, List<String> uris, Boolean unique) {
 
-        String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime start = LocalDateTime.parse(startDate, dateTimeFormatter);
         LocalDateTime end = LocalDateTime.parse(endDate, dateTimeFormatter);
 

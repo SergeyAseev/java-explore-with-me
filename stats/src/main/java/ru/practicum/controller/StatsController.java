@@ -38,7 +38,6 @@ public class StatsController {
             Boolean unique) {
 
         log.info("retrieve views");
-        System.out.println("TEST_TEST");
         return statsService.getViewStats(start, end, uris, unique);
     }
 }
