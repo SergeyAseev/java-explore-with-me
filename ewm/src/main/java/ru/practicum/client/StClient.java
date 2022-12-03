@@ -1,4 +1,4 @@
-package ru.practicum.stclient;
+package ru.practicum.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +20,10 @@ public class StClient  {
     private String appName;
 
     public void saveStats(HttpServletRequest request) {
+
         String ip = request.getRemoteAddr();
         String uri = request.getRequestURI();
         StatsClient statsClient = new StatsClient(appName, uri, ip);
-        log.info(" УРИ в реквесте: " + uri);
         webClient.post()
                 .uri("/hit")
                 .body(BodyInserters.fromValue(statsClient))

@@ -3,6 +3,7 @@ package ru.practicum.service;
 import ru.practicum.dto.EndPointStatsClientDto;
 import ru.practicum.model.ViewStats;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StatsService {
@@ -20,5 +21,5 @@ public interface StatsService {
      * @param unique
      * @return
      */
-    List<ViewStats> getViewStats(String startDate, String endDate, List<String> uriIds, Boolean unique);
+    List<ViewStats> getViewStats(LocalDateTime startDate, LocalDateTime endDate, List<String> uriIds, Boolean unique);
 }

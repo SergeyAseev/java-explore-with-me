@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.EndPointStatsClientMapper;
-import ru.practicum.client.StatsClient;
+/*import ru.practicum.client.EndPointStatsClientMapper;
+import ru.practicum.client.StatsClient;*/
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Sort;
 import ru.practicum.event.service.EventService;
+import ru.practicum.client.StClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -28,7 +29,7 @@ public class EventPublicController {
     private final EventService eventService;
 
     @Autowired
-    private final StClient  stClient;
+    private final StClient stClient;
 
     @GetMapping
     public List<EventShortDto> retrievePublicEvents(
