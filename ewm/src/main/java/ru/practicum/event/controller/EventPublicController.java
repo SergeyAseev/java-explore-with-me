@@ -28,7 +28,7 @@ public class EventPublicController {
     private final EventService eventService;
 
     @Autowired
-    private final StatsClient statsClient;
+    private final StClient  stClient;
 
     @GetMapping
     public List<EventShortDto> retrievePublicEvents(
@@ -46,8 +46,7 @@ public class EventPublicController {
         Sort sort = Sort.from(sortStr)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown type of sort: " + sortStr));
         log.info("Retrieve events from public");
-        //statsClient.save(request);
-        statsClient.save(EndPointStatsClientMapper.toEndpointHitDto("ewm-main-service", request));
+        stClient.saveStats(request);
         return eventService.retrievePublicEvents(text, catIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
@@ -55,8 +54,7 @@ public class EventPublicController {
     public EventFullDto retrievePublicEventById(@PathVariable Long id, HttpServletRequest request) {
 
         log.info("Retrieve event with ID = {}", id);
-        //statsClient.save(request);
-        statsClient.save(EndPointStatsClientMapper.toEndpointHitDto("ewm-main-service", request));
+        stClient.saveStats(request);
         return eventService.retrievePublicEventById(id);
     }
 }

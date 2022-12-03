@@ -22,7 +22,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     //вернуть все события в подборки
     Set<Event> findAllByIdIn(Set<Long> events);
 
-    // находим событие по статусу
+    // находим событие по статусул
     Optional<Event> findByIdAndState(Long eventId, EventState state);
 
     //находим события по параметрам для админа

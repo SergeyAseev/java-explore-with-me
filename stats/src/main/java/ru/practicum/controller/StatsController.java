@@ -24,7 +24,6 @@ public class StatsController {
 
     @PostMapping("/hit")
     public EndPointStatsClientDto save(@Valid @RequestBody EndPointStatsClientDto endPointStatsClientDto) {
-        System.out.println("TEST_TEST");
         log.info("add event in statistic");
         return statsService.save(endPointStatsClientDto);
     }
