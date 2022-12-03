@@ -8,11 +8,12 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class StClient  {
+public class StClient {
 
     private final WebClient webClient;
 
@@ -29,6 +30,23 @@ public class StClient  {
                 .body(BodyInserters.fromValue(statsClient))
                 .retrieve()
                 .bodyToMono(StatsClient.class)
+                .block();
+    }
+
+    public List<ViewStats> getViews(String start, String end,
+                                    List<String> uris, Boolean unique) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/stats")
+                        .queryParam("start", start)
+                        .queryParam("end", end)
+                        .queryParam("uris", uris)
+                        .queryParam("unique", unique)
+                        .build())
+                .retrieve()
+                .bodyToFlux(ViewStats.class)
+                .collectList()
                 .block();
     }
 
