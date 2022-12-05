@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
+import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.service.EventService;
 import ru.practicum.eventRequest.dto.EventRequestDto;
@@ -25,9 +26,9 @@ public class EventPrivateController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> retrieveEventsByCreator(@PathVariable Long userId,
-                                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<EventShortDto> retrieveEventsByCreator(@PathVariable Long userId,
+                                                       @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                                       @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Retrieve events by creator with ID = {}", userId);
         return eventService.retrieveEventsByCreator(userId, from, size);
     }

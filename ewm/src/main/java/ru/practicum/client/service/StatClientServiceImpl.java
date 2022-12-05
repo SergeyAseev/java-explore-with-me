@@ -30,8 +30,8 @@ public class StatClientServiceImpl implements StatClientService {
             return new HashMap<>();
         }
 
-        String start = event.get().getCreatedOn().toString();
-        String end = LocalDateTime.now().toString();
+        String start = event.get().getCreatedOn().withNano(0).toString();
+        String end = LocalDateTime.now().withNano(0).toString();
         List<String> uris = events.stream()
                 .map(e -> String.format(URI_EVENT, e.getId()))
                 .collect(Collectors.toList());

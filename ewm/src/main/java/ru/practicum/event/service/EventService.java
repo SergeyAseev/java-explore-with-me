@@ -78,7 +78,7 @@ public interface EventService {
      * @param size   количество элементов в наборе
      * @return список дто-экземпляров событий
      */
-    List<EventFullDto> retrieveEventsByCreator(Long userId, Integer from, Integer size);
+    List<EventShortDto> retrieveEventsByCreator(Long userId, Integer from, Integer size);
 
     /**
      * Изменения события добавленного текущим пользователем

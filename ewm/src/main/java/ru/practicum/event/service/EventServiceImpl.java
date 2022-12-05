@@ -51,10 +51,8 @@ public class EventServiceImpl implements EventService {
             rangeStart = LocalDateTime.now();
         }
 
-        return eventRepository.searchEvents(userIds, stateIds, catIds, rangeStart, rangeEnd, pageable)
-                .stream()
-                .map(this::makeFullDto)
-                .collect(Collectors.toList());
+        List<Event> events = eventRepository.searchEvents(userIds, stateIds, catIds, rangeStart, rangeEnd, pageable);
+        return toListEventFullDto(events, false);
     }
 
     @Override
@@ -129,17 +127,7 @@ public class EventServiceImpl implements EventService {
                             .collect(Collectors.toList());
                     break;
                 case VIEWS:
-                    Map<Long, Long> views = statClientService.getViewsForEvents(events, false);
-                    List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
-                    Map<Long, Long> reqs = new HashMap<>();
-                    for (Long[] temp : eventRepository
-                            .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
-                        reqs.put(temp[0], temp[1]);
-                    }
-                    return events.stream()
-                            .map(event -> EventMapper.toEventShortDto(event,
-                                    views.get(event.getId()), reqs.get(event.getId())))
-                            .collect(Collectors.toList());
+                    return toListEventShortDto(events, false);
             }
         }
 
@@ -160,16 +148,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> retrieveEventsByCreator(Long userId, Integer from, Integer size) {
+    public List<EventShortDto> retrieveEventsByCreator(Long userId, Integer from, Integer size) {
 
         Pageable pageable = PageRequest.of(
                 from / size,
                 size);
-
-        return eventRepository.findAllByInitiatorId(userId, pageable)
-                .stream()
-                .map(this::makeFullDto)
-                .collect(Collectors.toList());
+        return toListEventShortDto(eventRepository.findAllByInitiatorId(userId, pageable), false);
     }
 
     @Override
@@ -330,7 +314,41 @@ public class EventServiceImpl implements EventService {
     //Отдельно, чтобы не дублировать код
     private EventFullDto makeFullDto(Event event) {
         return EventMapper.toEventFullDto(event, eventRequestRepository
-                .countAllByStatusAndEventId(RequestState.CONFIRMED, event.getId()),
+                        .countAllByStatusAndEventId(RequestState.CONFIRMED, event.getId()),
                 statClientService.getViewsForEvent(event, false));
+    }
+
+    public List<EventShortDto> toListEventShortDto(List<Event> events, Boolean uniqueRequests) {
+
+        List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
+        Map<Long, Long> reqs = new HashMap<>();
+        for (Long[] temp : eventRepository
+                .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
+            reqs.put(temp[0], temp[1]);
+        }
+        Map<Long, Long> views = statClientService.getViewsForEvents(events, uniqueRequests);
+
+        return events.stream()
+                .map(event -> EventMapper.toEventShortDto(event,
+                        views.get(event.getId()),
+                        reqs.get(Objects.isNull(event.getId()) ? 0 : event.getId())))
+                .collect(Collectors.toList());
+    }
+
+    public List<EventFullDto> toListEventFullDto(List<Event> events, Boolean uniqueRequests) {
+
+        List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
+        Map<Long, Long> reqs = new HashMap<>();
+        for (Long[] temp : eventRepository
+                .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
+            reqs.put(temp[0], temp[1]);
+        }
+        Map<Long, Long> views = statClientService.getViewsForEvents(events, uniqueRequests);
+
+        return events.stream()
+                .map(event -> EventMapper.toEventFullDto(event,
+                        reqs.get(Objects.isNull(event.getId()) ? 0 : event.getId()),
+                        views.get(event.getId())))
+                .collect(Collectors.toList());
     }
 }

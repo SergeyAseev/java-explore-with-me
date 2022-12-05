@@ -48,10 +48,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                            LocalDateTime rangeEnd, Boolean onlyAvailable);
 
 
-    @Query(value = "select ev.event_id, (select count(er.id) " +
+    @Query(value = "select ev.id, (select count(er.id) " +
             "from events e " +
-            "left join event_request er on e.id = er.event_id " +
-            "where er.event_state = :status " +
+            "left join event_requests er on e.id = er.event_id " +
+            "where er.status = :status " +
             "and e.id in :eventIds) " +
             "from events ev " +
             "where ev.id in :eventIds  " +
