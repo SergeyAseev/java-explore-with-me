@@ -46,8 +46,8 @@ public class StatClientServiceImpl implements StatClientService {
     @Override
     public Long getViewsForEvent(Event event, Boolean unique) {
 
-        String start = event.getCreatedOn().toString();
-        String end = LocalDateTime.now().toString();
+        String start = event.getCreatedOn().withNano(0).toString();
+        String end = LocalDateTime.now().withNano(0).toString();
         List<String> uris = List.of(String.format(URI_EVENT, event.getId()));
         List<ViewStats> views = statsClient.getViews(start, end, uris, unique);
 

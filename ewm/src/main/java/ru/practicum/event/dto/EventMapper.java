@@ -10,36 +10,6 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-    public static EventFullDto toEventFullDto(Event event) {
-        return EventFullDto.builder()
-                .id(event.getId())
-                .title(event.getTitle())
-                .annotation(event.getAnnotation())
-                .description(event.getDescription())
-                .category(EventFullDto.CategoryDto.builder()
-                        .id(event.getCategory().getId())
-                        .name(event.getCategory().getName())
-                        .build())
-                .confirmedRequests(event.getConfirmedRequests())
-                .eventDate(event.getEventDate())
-                .paid(event.getPaid())
-                .requestModeration(event.getRequestModeration())
-                .participantLimit(event.getParticipantLimit())
-                .initiator(EventFullDto.UserShortDto.builder()
-                        .id(event.getInitiator().getId())
-                        .name(event.getInitiator().getName())
-                        .build())
-                .createdOn(event.getCreatedOn())
-                .publishedOn(event.getPublishedOn())
-                .state(event.getState())
-                .location(EventFullDto.Location.builder()
-                        .lat(event.getLocation().getLat())
-                        .lon(event.getLocation().getLon())
-                        .build())
-                //.views(views)
-                .build();
-    }
-
     public static EventFullDto toEventFullDto(Event event, Long confirmedRequests, Long views) {
         return EventFullDto.builder()
                 .id(event.getId())

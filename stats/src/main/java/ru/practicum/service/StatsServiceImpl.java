@@ -10,6 +10,7 @@ import ru.practicum.model.EndPointStatsClient;
 import ru.practicum.model.ViewStats;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -29,12 +30,15 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<ViewStats> getViewStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStats> getViewStats(String start, String end, List<String> uris, Boolean unique) {
+
+        LocalDateTime startTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime endTime = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         if (unique) {
-            return statsServiceRepository.findAllUnique(start, end, uris, unique);
+            return statsServiceRepository.findAllUnique(startTime, endTime, uris, unique);
         } else {
-            return statsServiceRepository.findAll(start, end, uris);
+            return statsServiceRepository.findAll(startTime, endTime, uris);
         }
     }
 }

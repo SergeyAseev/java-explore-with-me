@@ -3,7 +3,6 @@ package ru.practicum.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndPointStatsClientDto;
@@ -11,7 +10,6 @@ import ru.practicum.model.ViewStats;
 import ru.practicum.service.StatsService;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -31,8 +29,8 @@ public class StatsController {
 
     @GetMapping("/stats")
     public List<ViewStats> getViewStats(
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+            @RequestParam String start,
+            @RequestParam String end,
             @RequestParam(required = false) List<String> uris,
             @RequestParam(required = false, defaultValue = "false")
             Boolean unique) {
