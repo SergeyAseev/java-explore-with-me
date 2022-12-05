@@ -64,6 +64,27 @@ public class EventMapper {
                 .build();
     }
 
+    //TODO костыль. Надо переписать... а еще можно вынести пагинацию в отдельный метод...
+    public static EventShortDto toEventShortDto(Event event, Long views) {
+        return EventShortDto.builder()
+                .id(event.getId())
+                .annotation(event.getAnnotation())
+                .category(EventShortDto.CategoryDto.builder()
+                        .id(event.getCategory().getId())
+                        .name(event.getCategory().getName())
+                        .build())
+                .confirmedRequests(event.getConfirmedRequests())
+                .eventDate(event.getEventDate())
+                .initiator(EventShortDto.UserShortDto.builder()
+                        .id(event.getInitiator().getId())
+                        .name(event.getInitiator().getName())
+                        .build())
+                .paid(event.getPaid())
+                .views(views)
+                .title(event.getTitle())
+                .build();
+    }
+
     public static EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()
                 .id(event.getId())

@@ -1,34 +1,53 @@
 package ru.practicum.client;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Service
+@Slf4j
+@RequiredArgsConstructor
 public class StatsClient {
 
-    private Long id;
-    @NotBlank
-    private String app;
-    @NotBlank
-    private String uri;
-    @NotBlank
-    private String ip;
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;
+    private final WebClient webClient;
 
-    public StatsClient(String app, String uri, String ip) {
-        this.app = app;
-        this.uri = uri;
-        this.ip = ip;
+    @Value("${app-name}")
+    private String appName;
+
+    public void saveStats(HttpServletRequest request) {
+
+        String ip = request.getRemoteAddr();
+        String uri = request.getRequestURI();
+        Stats stats = new Stats(appName, uri, ip);
+        webClient.post()
+                .uri("/hit")
+                .body(BodyInserters.fromValue(stats))
+                .retrieve()
+                .bodyToMono(Stats.class)
+                .block();
+    }
+
+    public List<ViewStats> getViews(String start, String end,
+                                    List<String> uris, Boolean unique) {
+        return webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/stats")
+                        .queryParam("start", start)
+                        .queryParam("end", end)
+                        .queryParam("uris", uris)
+                        .queryParam("unique", unique)
+                        .build())
+                .retrieve()
+                .bodyToFlux(ViewStats.class)
+                .collectList()
+                .block();
     }
 
 }

@@ -25,6 +25,7 @@
 		<spring-boot-autoconfigure>2.7.1</spring-boot-autoconfigure>
 		<jakarta.validation-api>2.0.2</jakarta.validation-api>
 		<spring-boot-starter-webflux.version>2.7.5</spring-boot-starter-webflux.version>
+		<commons-lang3.version>3.12.0</commons-lang3.version>
 	</properties>
 
 	<modules>
@@ -63,6 +64,11 @@
 						</execution>
 					</executions>
 					<dependencies>
+						<dependency>
+							<groupId>org.apache.commons</groupId>
+							<artifactId>commons-lang3</artifactId>
+							<version>${commons-lang3.version}</version>
+						</dependency>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
 							<artifactId>checkstyle</artifactId>

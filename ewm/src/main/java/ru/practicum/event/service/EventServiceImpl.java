@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.categories.model.Category;
+import ru.practicum.client.service.StatClientService;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventMapper;
 import ru.practicum.event.dto.EventShortDto;
@@ -24,9 +25,7 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,6 +38,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private final EventRequestRepository eventRequestRepository;
+
+    @Autowired
+    private final StatClientService statClientService;
 
     @Override
     public List<EventFullDto> retrieveEvents(List<Long> userIds, List<EventState> stateIds, List<Integer> catIds,
@@ -116,27 +118,27 @@ public class EventServiceImpl implements EventService {
             rangeStart = LocalDateTime.now();
         }
 
-        List<EventShortDto> events = eventRepository.findEvents(text, catIds, paid, rangeStart, rangeEnd, onlyAvailable)
-                .stream()
-                .map(EventMapper::toEventShortDto)
-                .collect(Collectors.toList());
+        List<Event> events = new ArrayList<>(eventRepository
+                .findEvents(text, catIds, paid, rangeStart, rangeEnd, onlyAvailable));
 
         if (sort != null) {
             switch (sort) {
                 case EVENT_DATE:
                     events = events.stream()
-                            .sorted(Comparator.comparing(EventShortDto::getEventDate))
+                            .sorted(Comparator.comparing(Event::getEventDate))
                             .collect(Collectors.toList());
                     break;
                 case VIEWS:
-                    events = events.stream()
-                            .sorted(Comparator.comparingLong(EventShortDto::getViews))
+                    Map<Long, Long> views = statClientService.getViewsForEvents(events, false);
+                    return events.stream()
+                            .map(event -> EventMapper.toEventShortDto(event,
+                                    views.get(event.getId())))
                             .collect(Collectors.toList());
-                    break;
             }
         }
 
         return events.stream()
+                .map(EventMapper::toEventShortDto)
                 .skip(from)
                 .limit(size)
                 .collect(Collectors.toList());

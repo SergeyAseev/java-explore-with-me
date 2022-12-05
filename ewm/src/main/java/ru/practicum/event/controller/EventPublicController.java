@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-/*import ru.practicum.client.EndPointStatsClientMapper;
-import ru.practicum.client.StatsClient;*/
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Sort;
 import ru.practicum.event.service.EventService;
-import ru.practicum.client.StClient;
+import ru.practicum.client.StatsClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -29,7 +27,7 @@ public class EventPublicController {
     private final EventService eventService;
 
     @Autowired
-    private final StClient stClient;
+    private final StatsClient statsClient;
 
     @GetMapping
     public List<EventShortDto> retrievePublicEvents(
@@ -47,7 +45,7 @@ public class EventPublicController {
         Sort sort = Sort.from(sortStr)
                 .orElseThrow(() -> new IllegalArgumentException("Unknown type of sort: " + sortStr));
         log.info("Retrieve events from public");
-        stClient.saveStats(request);
+        statsClient.saveStats(request);
         return eventService.retrievePublicEvents(text, catIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
@@ -55,7 +53,7 @@ public class EventPublicController {
     public EventFullDto retrievePublicEventById(@PathVariable Long id, HttpServletRequest request) {
 
         log.info("Retrieve event with ID = {}", id);
-        stClient.saveStats(request);
+        statsClient.saveStats(request);
         return eventService.retrievePublicEventById(id);
     }
 }
