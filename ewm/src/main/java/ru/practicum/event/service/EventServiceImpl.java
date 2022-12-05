@@ -132,7 +132,7 @@ public class EventServiceImpl implements EventService {
                     Map<Long, Long> views = statClientService.getViewsForEvents(events, false);
                     List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
                     Map<Long, Long> reqs = new HashMap<>();
-                    for(Long[] temp : eventRepository
+                    for (Long[] temp : eventRepository
                             .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
                         reqs.put(temp[0], temp[1]);
                     }
