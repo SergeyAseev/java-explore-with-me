@@ -3,6 +3,7 @@ package ru.practicum.event.service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 
@@ -45,4 +46,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "and (:onlyAvailable is false or (e.participantLimit = 0 or e.confirmedRequests < e.participantLimit))")
     List<Event> findEvents(String text, List<Integer> catIds, Boolean isPaid, LocalDateTime rangeStart,
                            LocalDateTime rangeEnd, Boolean onlyAvailable);
+
+
+    @Query(value = "select ev.event_id, (select count(er.id) " +
+            "from events e " +
+            "left join event_request er on e.id = er.event_id " +
+            "where er.event_state = :status " +
+            "and e.id in :eventIds) " +
+            "from events ev " +
+            "where ev.id in :eventIds  " +
+            "group by ev.id", nativeQuery = true)
+    List<Long[]> countAllByStatusAndEventIdIn(@Param("status") String status,
+                                              @Param("eventIds") List<Long> eventIds);
 }

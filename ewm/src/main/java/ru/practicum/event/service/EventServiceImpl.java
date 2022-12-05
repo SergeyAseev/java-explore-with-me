@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
 
         return eventRepository.searchEvents(userIds, stateIds, catIds, rangeStart, rangeEnd, pageable)
                 .stream()
-                .map(EventMapper::toEventFullDto)
+                .map(this::makeFullDto)
                 .collect(Collectors.toList());
     }
 
@@ -76,7 +76,7 @@ public class EventServiceImpl implements EventService {
             event.setLocation(location);
         }
 
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return makeFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class EventServiceImpl implements EventService {
         event.setState(EventState.PUBLISHED);
         event.setPublishedOn(LocalDateTime.now());
 
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return makeFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(EventState.CANCELED);
 
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return makeFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -130,9 +130,15 @@ public class EventServiceImpl implements EventService {
                     break;
                 case VIEWS:
                     Map<Long, Long> views = statClientService.getViewsForEvents(events, false);
+                    List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
+                    Map<Long, Long> reqs = new HashMap<>();
+                    for(Long[] temp : eventRepository
+                            .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
+                        reqs.put(temp[0], temp[1]);
+                    }
                     return events.stream()
                             .map(event -> EventMapper.toEventShortDto(event,
-                                    views.get(event.getId())))
+                                    views.get(event.getId()), reqs.get(event.getId())))
                             .collect(Collectors.toList());
             }
         }
@@ -150,7 +156,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with ID = %s wasn't found", eventId)));
 
-        return EventMapper.toEventFullDto(event);
+        return makeFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -162,7 +168,7 @@ public class EventServiceImpl implements EventService {
 
         return eventRepository.findAllByInitiatorId(userId, pageable)
                 .stream()
-                .map(EventMapper::toEventFullDto)
+                .map(this::makeFullDto)
                 .collect(Collectors.toList());
     }
 
@@ -195,13 +201,15 @@ public class EventServiceImpl implements EventService {
             throw new ValidationException(String.format("wrong time %s", newEventDto.getEventDate().toString()));
         }
         Event event = EventMapper.toEvent(userId, newEventDto);
+        eventRepository.save(event);
+        //Long temp = statClientService.getViewsForEvent(event, false);
 
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return makeFullDto(eventRepository.save(event));
     }
 
     @Override
     public EventFullDto retrieveEventByIdForCreator(Long userId, Long eventId) {
-        return EventMapper.toEventFullDto(eventRepository.findByIdAndInitiatorId(eventId, userId));
+        return makeFullDto(eventRepository.findByIdAndInitiatorId(eventId, userId));
     }
 
     @Override
@@ -211,7 +219,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId);
         event.setState(EventState.CANCELED);
 
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return makeFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -318,5 +326,11 @@ public class EventServiceImpl implements EventService {
         if (newEventDto.getTitle() != null) {
             event.setTitle(newEventDto.getTitle());
         }
+    }
+
+    //Отдельно, чтобы не дублировать код
+    private EventFullDto makeFullDto(Event event) {
+        return EventMapper.toEventFullDto(event, eventRequestRepository
+                .countAllByStatusAndEventId(RequestState.CONFIRMED, event.getId()));
     }
 }
