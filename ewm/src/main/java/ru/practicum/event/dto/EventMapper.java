@@ -40,7 +40,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventFullDto toEventFullDto(Event event, Long confirmedRequests) {
+    public static EventFullDto toEventFullDto(Event event, Long confirmedRequests, Long views) {
         return EventFullDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -66,7 +66,7 @@ public class EventMapper {
                         .lat(event.getLocation().getLat())
                         .lon(event.getLocation().getLon())
                         .build())
-                //.views(views)
+                .views(views)
                 .confirmedRequests(Math.toIntExact(confirmedRequests))
                 .build();
     }

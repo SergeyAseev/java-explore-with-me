@@ -202,7 +202,6 @@ public class EventServiceImpl implements EventService {
         }
         Event event = EventMapper.toEvent(userId, newEventDto);
         eventRepository.save(event);
-        //Long temp = statClientService.getViewsForEvent(event, false);
 
         return makeFullDto(eventRepository.save(event));
     }
@@ -331,6 +330,7 @@ public class EventServiceImpl implements EventService {
     //Отдельно, чтобы не дублировать код
     private EventFullDto makeFullDto(Event event) {
         return EventMapper.toEventFullDto(event, eventRequestRepository
-                .countAllByStatusAndEventId(RequestState.CONFIRMED, event.getId()));
+                .countAllByStatusAndEventId(RequestState.CONFIRMED, event.getId()),
+                statClientService.getViewsForEvent(event, false));
     }
 }
