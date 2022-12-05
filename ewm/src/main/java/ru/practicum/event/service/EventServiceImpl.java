@@ -321,33 +321,33 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> toListEventShortDto(List<Event> events, Boolean uniqueRequests) {
 
         List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
-        Map<Long, Long> reqs = new HashMap<>();
+        Map<Long, Long> requests = new HashMap<>();
         for (Long[] temp : eventRepository
                 .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
-            reqs.put(temp[0], temp[1]);
+            requests.put(temp[0], temp[1]);
         }
         Map<Long, Long> views = statClientService.getViewsForEvents(events, uniqueRequests);
 
         return events.stream()
                 .map(event -> EventMapper.toEventShortDto(event,
                         views.get(event.getId()),
-                        reqs.get(Objects.isNull(event.getId()) ? 0 : event.getId())))
+                        requests.get(Objects.isNull(event.getId()) ? 0 : event.getId())))
                 .collect(Collectors.toList());
     }
 
     public List<EventFullDto> toListEventFullDto(List<Event> events, Boolean uniqueRequests) {
 
         List<Long> evs = events.stream().map(Event::getId).collect(Collectors.toList());
-        Map<Long, Long> reqs = new HashMap<>();
+        Map<Long, Long> requests = new HashMap<>();
         for (Long[] temp : eventRepository
                 .countAllByStatusAndEventIdIn(RequestState.CONFIRMED.name(), evs)) {
-            reqs.put(temp[0], temp[1]);
+            requests.put(temp[0], temp[1]);
         }
         Map<Long, Long> views = statClientService.getViewsForEvents(events, uniqueRequests);
 
         return events.stream()
                 .map(event -> EventMapper.toEventFullDto(event,
-                        reqs.get(Objects.isNull(event.getId()) ? 0 : event.getId()),
+                        requests.get(Objects.isNull(event.getId()) ? 0 : event.getId()),
                         views.get(event.getId())))
                 .collect(Collectors.toList());
     }
