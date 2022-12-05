@@ -127,7 +127,10 @@ public class EventServiceImpl implements EventService {
                             .collect(Collectors.toList());
                     break;
                 case VIEWS:
-                    return toListEventShortDto(events, false);
+                    List<EventShortDto> eventShortDto = toListEventShortDto(events, false);
+                    return eventShortDto.stream()
+                            .sorted(Comparator.comparingLong(EventShortDto::getViews).reversed())
+                            .collect(Collectors.toList());
             }
         }
 
