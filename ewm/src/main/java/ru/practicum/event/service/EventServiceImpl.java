@@ -466,7 +466,7 @@ public class EventServiceImpl implements EventService {
 
     private Comment getCommentById(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(()-> new NotFoundException(String.format("Comment with ID = %s wasn't found ",
+                .orElseThrow(() -> new NotFoundException(String.format("Comment with ID = %s wasn't found ",
                         commentId)));
     }
 
