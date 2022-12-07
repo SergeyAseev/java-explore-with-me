@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.client.StatsClient;
+import ru.practicum.event.comment.dto.CommentDto;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.model.Sort;
 import ru.practicum.event.service.EventService;
-import ru.practicum.client.StatsClient;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -55,5 +56,21 @@ public class EventPublicController {
         log.info("Retrieve event with ID = {}", id);
         statsClient.saveStats(request);
         return eventService.retrievePublicEventById(id);
+    }
+
+    @GetMapping("/{id}/comments")
+    public List<CommentDto> retrieveCommentsForEvent(@PathVariable(name = "id") Long eventId,
+                                                     @PositiveOrZero @RequestParam(name = "from", defaultValue = "0")
+                                                     Integer from,
+                                                     @Positive @RequestParam(name = "size", defaultValue = "10")
+                                                     Integer size) {
+        log.info("Retrieve comments for event with ID = {}", eventId);
+        return eventService.retrieveCommentsForEvent(eventId, from, size);
+    }
+
+    @GetMapping("/comments/{comId}")
+    public CommentDto retrieveCommentById(@PathVariable(name = "comId") Long commentId) {
+        log.info("Retrieve comment with ID = {}", commentId);
+        return eventService.retrieveCommentById(commentId);
     }
 }

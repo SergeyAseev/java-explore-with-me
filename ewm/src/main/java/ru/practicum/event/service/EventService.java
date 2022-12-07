@@ -1,5 +1,6 @@
 package ru.practicum.event.service;
 
+import ru.practicum.event.comment.dto.CommentDto;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -46,6 +47,13 @@ public interface EventService {
      * @return дто-экземпляр события
      */
     EventFullDto rejectEvent(Long eventId);
+
+    /**
+     * Удаления комментария админом
+     *
+     * @param commentId ID комментария
+     */
+    void removeCommentByAdmin(Long commentId);
     //admin controller end
 
     //public controller start
@@ -66,6 +74,24 @@ public interface EventService {
      * @return дто-экземпляр события
      */
     EventFullDto retrievePublicEventById(Long eventId);
+
+    /**
+     * Получения комментариев к событию. Публичный метод
+     *
+     * @param eventId ID события
+     * @param from    количество элементов, которые нужно пропустить для формирования текущего набора
+     * @param size    количество элементов в наборе
+     * @return список дто-экземпляров комментариев
+     */
+    List<CommentDto> retrieveCommentsForEvent(Long eventId, Integer from, Integer size);
+
+    /**
+     * Получение комментария
+     *
+     * @param commentId ID комментария
+     * @return дто-экземпляров комментария
+     */
+    CommentDto retrieveCommentById(Long commentId);
     //public controller end
 
     //private controller start
@@ -143,5 +169,50 @@ public interface EventService {
      */
     EventRequestDto rejectRequestForEvent(Long userId, Long eventId, Long reqId);
 
+    /**
+     * Пользователь оставляет комментарий к событию
+     *
+     * @param userId     ID пользователя
+     * @param eventId    ID события
+     * @param commentDto дто-экземплял комментария
+     * @return созданный комментарий
+     */
+    CommentDto addCommentForEvent(Long userId, Long eventId, CommentDto commentDto);
+
+    /**
+     * Пользователь редактирует свой комментарий
+     *
+     * @param userId     ID пользователя
+     * @param commentId  ID комментария
+     * @param commentDto дто-экземплял комментария
+     * @return обновленный комментарий
+     */
+    CommentDto updateCommentForEvent(Long userId, Long commentId, CommentDto commentDto);
+
+    /**
+     * Добавляем лайк комментарию
+     *
+     * @param userId     ID пользователя
+     * @param commentId  ID комментария
+     * @return обновленный комментарий
+     */
+    CommentDto addLikeForComment(Long userId, Long commentId);
+
+    /**
+     * Добавляем дизлайк комментарию
+     *
+     * @param userId     ID пользователя
+     * @param commentId  ID комментария
+     * @return обновленный комментарий
+     */
+    CommentDto addDislikeForComment(Long userId, Long commentId);
+
+    /**
+     * Пользователь удаляет свой комментарий
+     *
+     * @param userId    ID пользователя
+     * @param commentId ID комментария
+     */
+    void removeCommentForEvent(Long userId, Long commentId);
     //private controller end
 }

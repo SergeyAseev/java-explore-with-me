@@ -1,16 +1,19 @@
 package ru.practicum.event.dto;
 
 import ru.practicum.categories.model.Category;
+import ru.practicum.event.comment.dto.CommentDto;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.model.Location;
 import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class EventMapper {
 
-    public static EventFullDto toEventFullDto(Event event, Long confirmedRequests, Long views) {
+    public static EventFullDto toEventFullDto(Event event, Long confirmedRequests, Long views,
+                                              List<CommentDto> commentDtoList) {
         return EventFullDto.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -38,6 +41,7 @@ public class EventMapper {
                         .build())
                 .views(views)
                 .confirmedRequests(Math.toIntExact(confirmedRequests))
+                .commentDtoList(commentDtoList)
                 .build();
     }
 
