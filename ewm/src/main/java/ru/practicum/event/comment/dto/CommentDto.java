@@ -24,5 +24,4 @@ public class CommentDto {
     private LocalDateTime created;
     private Integer likesCount;
     private Integer dislikesCount;
-    private Double rating;
 }

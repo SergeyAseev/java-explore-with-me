@@ -1,6 +1,6 @@
 package ru.practicum.event.comment.dto;
 
-import ru.practicum.event.comment.Comment;
+import ru.practicum.event.comment.model.Comment;
 import ru.practicum.event.model.Event;
 import ru.practicum.user.model.User;
 

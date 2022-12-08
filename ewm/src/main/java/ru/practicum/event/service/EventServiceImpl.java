@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.categories.model.Category;
 import ru.practicum.client.service.StatClientService;
-import ru.practicum.event.comment.Comment;
+import ru.practicum.event.comment.model.Comment;
+import ru.practicum.event.comment.CommentLinkRepository;
 import ru.practicum.event.comment.CommentRepository;
+import ru.practicum.event.comment.model.CommentUserLink;
 import ru.practicum.event.comment.dto.CommentDto;
 import ru.practicum.event.comment.dto.CommentMapper;
 import ru.practicum.event.dto.EventFullDto;
@@ -52,6 +54,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private final CommentRepository commentRepository;
+
+    @Autowired
+    private final CommentLinkRepository commentLinkRepository;
 
     @Autowired
     private final UserRepository userRepository;
@@ -409,6 +414,8 @@ public class EventServiceImpl implements EventService {
         }
         Comment comment = CommentMapper.toComment(commentDto, author, event);
         comment.setCreated(LocalDateTime.now());
+        comment.setLikesCount(0);
+        comment.setDislikesCount(0);
 
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
@@ -437,10 +444,20 @@ public class EventServiceImpl implements EventService {
     public CommentDto addLikeForComment(Long userId, Long commentId) {
 
         Comment comment = getCommentById(commentId);
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %s wasn't found", userId)));
         checkIsUserAuthorOfComment(comment, userId);
-        comment.setLikesCount(comment.getLikesCount() + 1);
+
+        CommentUserLink commentUserLink = CommentUserLink.builder()
+                .comment(comment)
+                .user(user)
+                .build();
+
+        if (Objects.isNull(commentLinkRepository.getByComment_IdAndUser_Id(commentId, userId))) {
+            comment.setLikesCount(comment.getLikesCount() + 1);
+            commentLinkRepository.save(commentUserLink);
+        }
+
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
@@ -448,9 +465,19 @@ public class EventServiceImpl implements EventService {
     public CommentDto addDislikeForComment(Long userId, Long commentId) {
 
         Comment comment = getCommentById(commentId);
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with ID %s wasn't found", userId)));
-        comment.setLikesCount(comment.getLikesCount() - 1);
+
+        CommentUserLink commentUserLink = CommentUserLink.builder()
+                .comment(comment)
+                .user(user)
+                .build();
+
+        if (Objects.isNull(commentLinkRepository.getByComment_IdAndUser_Id(commentId, userId))) {
+            comment.setDislikesCount(comment.getDislikesCount() + 1);
+            commentLinkRepository.save(commentUserLink);
+        }
+
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 

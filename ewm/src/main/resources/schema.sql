@@ -57,6 +57,12 @@ CREATE TABLE IF NOT EXISTS "comments" (
     "dislikes_count" INT DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS "comment_user_link" (
+      "id" SERIAL PRIMARY KEY,
+      "user_id" BIGINT NOT NULL,
+      "comment_id" BIGINT NOT NULL
+);
+
 ALTER TABLE "events" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
 
 ALTER TABLE "events" ADD FOREIGN KEY ("initiator_id") REFERENCES "users" ("id");
@@ -72,5 +78,9 @@ ALTER TABLE "compilation_event_link" ADD FOREIGN KEY ("compilation_id") REFERENC
 ALTER TABLE "comments" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "comments" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+
+ALTER TABLE "comment_user_link" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "comment_user_link" ADD FOREIGN KEY ("comment_id") REFERENCES "comments" ("id");
 
 

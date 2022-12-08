@@ -1,11 +1,10 @@
-package ru.practicum.event.comment;
+package ru.practicum.event.comment.model;
 
 import lombok.*;
 import ru.practicum.event.model.Event;
 import ru.practicum.user.model.User;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -40,9 +39,10 @@ public class Comment {
     private LocalDateTime created;
 
     @Column(name = "likes_count")
+    @Builder.Default
     private Integer likesCount = 0;
 
     @Column(name = "dislikes_count")
-    @Valid()
+    @Builder.Default
     private Integer dislikesCount = 0;
 }
