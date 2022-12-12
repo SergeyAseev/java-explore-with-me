@@ -3,11 +3,13 @@ package ru.practicum.event.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
+import ru.practicum.event.comment.dto.CommentDto;
 import ru.practicum.event.model.EventState;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,6 +43,7 @@ public class EventFullDto {
     @NotNull
     private String title;
     private Long views;
+    private List<CommentDto> commentDtoList;
 
     @Getter
     @Setter

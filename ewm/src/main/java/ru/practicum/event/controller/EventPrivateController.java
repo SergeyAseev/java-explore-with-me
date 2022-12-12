@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.event.comment.dto.CommentDto;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -82,5 +83,45 @@ public class EventPrivateController {
                                                  @PathVariable @NotNull Long reqId) {
         log.info("Reject request for event with ID = {} for user with ID = {}", eventId, userId);
         return eventService.rejectRequestForEvent(userId, eventId, reqId);
+    }
+    //add comment
+    // edit comment
+    //remove comment
+
+    @PostMapping("{eventId}/comments")
+    public CommentDto addCommentForEvent(@PathVariable @NotNull Long userId,
+                                         @PathVariable @NotNull Long eventId,
+                                         @RequestBody CommentDto commentDto) {
+        log.info("User with ID = {} add a comment for event with ID = {}", userId, eventId);
+        return eventService.addCommentForEvent(userId, eventId, commentDto);
+    }
+
+    @PutMapping("/comments/{commentId}")
+    public CommentDto updateCommentForEvent(@PathVariable @NotNull Long userId,
+                                            @PathVariable @NotNull Long commentId,
+                                            @RequestBody @Valid CommentDto commentDto) {
+        log.info("User with ID = {} updated comment with ID = {}", userId, commentId);
+        return eventService.updateCommentForEvent(userId, commentId, commentDto);
+    }
+
+    @PutMapping("/comments/{commentId}/like")
+    public CommentDto addLikeForComment(@PathVariable @NotNull Long userId,
+                                        @PathVariable @NotNull Long commentId) {
+        log.info("User with ID = {} updated comment with ID = {}", userId, commentId);
+        return eventService.addLikeForComment(userId, commentId);
+    }
+
+    @PutMapping("/comments/{commentId}/dislike")
+    public CommentDto addDislikeForComment(@PathVariable @NotNull Long userId,
+                                           @PathVariable @NotNull Long commentId) {
+        log.info("User with ID = {} updated comment with ID = {}", userId, commentId);
+        return eventService.addDislikeForComment(userId, commentId);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public void removeCommentForEvent(@PathVariable @NotNull Long userId,
+                                      @PathVariable @NotNull Long commentId) {
+        log.info("User with ID = {} removed comment with ID = {}", userId, commentId);
+        eventService.removeCommentForEvent(userId, commentId);
     }
 }
