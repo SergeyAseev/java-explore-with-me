@@ -1,6 +1,6 @@
 # explore-with-me (Сервис для создания и поиска мероприятий)
 
-Стэк: Java 11, PostgresSQL, Docker, SpringBoot
+Стэк: Java 11, PostgresSQL, Docker, SpringBoot, Hibernate, Maven, Lombok.
 
 Сервис состоит из двух микросервисов:
 
